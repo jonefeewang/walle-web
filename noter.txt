@@ -1,0 +1,2 @@
+yii migrate/create add_reqm_type_column_content_column_developer_column_reviewer_column_deployer_column_to_task --fields="reqm_type:string,content:text,developer:string,reviewer:string,deployer:string"
+yii migrate/create add_reqm_source_column_temp_theme_column_baselib_config_column_deploy_date_column_pass_review_column_pass_test_column_rollback_time_column_regular_check_column_to_task --fields="reqm_source:string,temp_theme:text,baselib_config:text,deploy_time:date,pass_review:boolean,pass_test:boolean,rollback_time:smallinteger,regular_check:text"

@@ -22,6 +22,7 @@ use app\components\GlobalHelper;
  * @property integer $updated_at
  * @property string $branch
  * @property string $file_list
+ * @property sring $reqm_type
  */
 class Task extends \yii\db\ActiveRecord
 {
@@ -88,6 +89,15 @@ class Task extends \yii\db\ActiveRecord
         return 'task';
     }
 
+    public function init()
+    {
+        $this->pass_review=true;
+        $this->pass_test=true;
+        $this->deploy_time= date('Y-m-d');
+        parent::init();
+    }
+
+
     /**
      * @inheritdoc
      */
@@ -133,6 +143,11 @@ class Task extends \yii\db\ActiveRecord
             'ex_link_id' => 'Ex Link ID',
             'commit_id' => 'Commit ID',
             'created_at' => 'Created At',
+            'reqm_type'=>'需求类型',
+            'content'=>'修改内容',
+            'developer'=>'开发人员',
+            'reviewer'=>'代码review人',
+            'deployer'=>'上线人员',
         ];
     }
 

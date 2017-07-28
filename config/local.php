@@ -10,14 +10,20 @@ return [
     'components' => [
         'db' => [
 //            'dsn'       => isset($_ENV['WALLE_DB_DSN'])  ? $_ENV['WALLE_DB_DSN']  : 'mysql:host=10.10.15.118;dbname=walle',
+            'dsn'       => 'mysql:host=bj.walleplus.w.qiyi.db;port=8787;dbname=walle',
+            'username'  => isset($_ENV['WALLE_DB_USER']) ? $_ENV['WALLE_DB_USER'] : 'walle_plus',
+            'password'  => isset($_ENV['WALLE_DB_PASS']) ? $_ENV['WALLE_DB-pPASS'] : '6)wz4Voy',
         ],
         'mail' => [
             'transport' => [
+                'host'       => isset($_ENV['WALLE_MAIL_HOST']) ? $_ENV['WALLE_MAIL_HOST'] : '10.11.50.63',     # smtp 发件地址
+                'username'   => isset($_ENV['WALLE_MAIL_USER']) ? $_ENV['WALLE_MAIL_USER'] : 'mbd_admin',  # smtp 发件用户名
+                'password'   => isset($_ENV['WALLE_MAIL_PASS']) ? $_ENV['WALLE_MAIL_PASS'] : 'Alan_201705',       # smtp 发件人的密码
             ],
             'messageConfig' => [
                 'charset' => 'UTF-8',
                 'from'    => [
-                  (isset($_ENV['WALLE_MAIL_EMAIL']) ? $_ENV['WALLE_MAIL_EMAIL'] : 'mbd_admin@qiyi.com') => (isset($_ENV['WALLE_MAIL_NAME']) ? $_ENV['WALLE_MAIL_NAME'] : 'mbd_admin'),
+                    (isset($_ENV['WALLE_MAIL_EMAIL']) ? $_ENV['WALLE_MAIL_EMAIL'] : 'mbd_admin@qiyi.com') => (isset($_ENV['WALLE_MAIL_NAME']) ? $_ENV['WALLE_MAIL_NAME'] : 'mbd_admin'),
                 ],  # smtp 发件用户名(须与mail.transport.username一致)
             ],
         ],

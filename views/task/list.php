@@ -71,6 +71,11 @@ use yii\helpers\Url;
                         <?= \Yii::t('w', 'task_status_' . $item['status']) ?></td>
                     <td>
                         <div class="action-buttons">
+                            <a href="<?= Url::to("@web/task/submit/?taskId={$item['id']}&projectId={$item['project']['id']}") ?>" data-toggle="modal" data-target="#myModal">
+                                <i class="icon-zoom-in bigger-130"></i>
+                                <?= yii::t('conf', 'p_preview') ?>
+                            </a>
+
                             <?php if ($audit && !in_array($item['status'],
                                     [Task::STATUS_DONE, Task::STATUS_FAILED])
                             ) { ?>
@@ -114,7 +119,9 @@ use yii\helpers\Url;
     </div><!-- /.box-body -->
     <?= LinkPager::widget(['pagination' => $pages]); ?>
 </div>
-
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+</div>
 <script type="text/javascript">
     $(function() {
         // 发起上线

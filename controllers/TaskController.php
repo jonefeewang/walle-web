@@ -26,20 +26,20 @@ class TaskController extends Controller
     {
         $size = $this->getParam('per-page') ?: $size;
         $list = Task::find()
-                    ->with('user')
-                    ->with('project')
-                    ->where(['user_id' => $this->uid]);
+            ->with('user')
+            ->with('project')
+            ->where(['user_id' => $this->uid]);
 
         $projectTable = Project::tableName();
         $groupTable = Group::tableName();
         $projects = Project::find()
-                           ->leftJoin(Group::tableName(), "`$groupTable`.`project_id` = `$projectTable`.`id`")
-                           ->where([
-                               "`$projectTable`.status" => Project::STATUS_VALID,
-                               "`$groupTable`.`user_id`" => $this->uid
-                           ])
-                           ->asArray()
-                           ->all();
+            ->leftJoin(Group::tableName(), "`$groupTable`.`project_id` = `$projectTable`.`id`")
+            ->where([
+                "`$projectTable`.status" => Project::STATUS_VALID,
+                "`$groupTable`.`user_id`" => $this->uid
+            ])
+            ->asArray()
+            ->all();
 
         // 有审核权限的任务
         $auditProjects = Group::getAuditProjectIds($this->uid);
@@ -59,9 +59,9 @@ class TaskController extends Controller
 
         $tasks = $list->orderBy('id desc');
         $list = $tasks->offset(($page - 1) * $size)
-                      ->limit($size)
-                      ->asArray()
-                      ->all();
+            ->limit($size)
+            ->asArray()
+            ->all();
 
         $pages = new Pagination(['totalCount' => $tasks->count(), 'pageSize' => $size]);
 
@@ -82,7 +82,7 @@ class TaskController extends Controller
      * @return string
      * @throws
      */
-    public function actionSubmit($projectId = null)
+    public function actionSubmit($projectId = null,$taskId=null)
     {
 
         // 为了方便用户更改表名，避免表名直接定死
@@ -91,13 +91,13 @@ class TaskController extends Controller
         if (!$projectId) {
             // 显示所有项目列表
             $projects = Project::find()
-                               ->leftJoin(Group::tableName(), "`$groupTable`.`project_id` = `$projectTable`.`id`")
-                               ->where([
-                                   "`$projectTable`.status" => Project::STATUS_VALID,
-                                   "`$groupTable`.`user_id`" => $this->uid
-                               ])
-                               ->asArray()
-                               ->all();
+                ->leftJoin(Group::tableName(), "`$groupTable`.`project_id` = `$projectTable`.`id`")
+                ->where([
+                    "`$projectTable`.status" => Project::STATUS_VALID,
+                    "`$groupTable`.`user_id`" => $this->uid
+                ])
+                ->asArray()
+                ->all();
 
             return $this->render('select-project', [
                 'projects' => $projects,
@@ -114,8 +114,8 @@ class TaskController extends Controller
         if (\Yii::$app->request->getIsPost()) {
 
             $group = Group::find()
-                          ->where(['user_id' => $this->uid, 'project_id' => $projectId])
-                          ->count();
+                ->where(['user_id' => $this->uid, 'project_id' => $projectId])
+                ->count();
             if (!$group) {
                 throw new \Exception(yii::t('task', 'you are not the member of project'));
             }
@@ -132,13 +132,23 @@ class TaskController extends Controller
             }
         }
 
-        $tpl = $conf->repo_type == Project::REPO_GIT ? 'submit-git' : 'submit-svn';
+        if ($conf->repo_type == Project::REPO_GIT) {
+            $tpl = Project::$APPLY_TEMPLATE[$conf->apply_template];
+        } else
+            $tpl = 'submit-svn';
+
+         if($taskId) { //是否为预览模式
+             $task = Task::getTask($taskId);
+             $tpl .= '-preview';
+             $this->layout = 'modal';
+         }
 
         return $this->render($tpl, [
             'task' => $task,
             'conf' => $conf,
         ]);
     }
+
 
     /**
      * 任务删除
@@ -183,8 +193,8 @@ class TaskController extends Controller
             throw new \Exception(yii::t('task', 'no rollback twice'));
         }
         $conf = Project::find()
-                       ->where(['id' => $this->task->project_id, 'status' => Project::STATUS_VALID])
-                       ->one();
+            ->where(['id' => $this->task->project_id, 'status' => Project::STATUS_VALID])
+            ->one();
         if (!$conf) {
             throw new \Exception(yii::t('task', 'can\'t rollback the closed project\'s job'));
         }

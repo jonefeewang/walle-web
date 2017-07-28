@@ -25,12 +25,12 @@ return [
     ],
     'user_driver'                       => 'local',
     'ldap'                              => [
-        'host'           => '127.0.0.1',
+        'host'           => 'adldap.qiyi.domain',
         'port'           => 389,
-        'username'       => 'cn=root,dc=example,dc=com',
+        'username'       => 'cn=root,dc=iqiyi,dc=pps',
         'password'       => 'password',
-        'accountBase'    => 'dc=example,dc=com',
-        'accountPattern' => '(&(objectClass=inetOrgPerson)(cn=${username}))',
+        'accountBase'    => 'ou=qiyi,dc=iqyi,dc=pps',
+        'accountPattern' => 'sAMAcountName={0}',
         'identity'       => 'uid',
         'attributesMap'  => [
             'uid'       => 'username',

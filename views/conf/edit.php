@@ -12,9 +12,9 @@ use yii\widgets\ActiveForm;
     <div class="box-body">
         <?= $form->field($conf, 'name')
             ->textInput([
-                'class'          => 'col-sm-11',
+                'class'          => 'col-sm-10',
             ])
-            ->label(yii::t('conf', 'name'), ['class' => 'text-right bolder blue col-sm-1']) ?>
+            ->label(yii::t('conf', 'name'), ['class' => 'text-right bolder blue col-sm-2']) ?>
 
         <div class="clearfix"></div>
         <?= $form->field($conf, 'level')->dropDownList([
@@ -22,8 +22,15 @@ use yii\widgets\ActiveForm;
             Project::LEVEL_SIMU => \Yii::t('w', 'conf_level_' . Project::LEVEL_SIMU),
             Project::LEVEL_PROD => \Yii::t('w', 'conf_level_' . Project::LEVEL_PROD),
         ],[
-            'class'          => 'col-sm-11',])
-            ->label(yii::t('conf', 'env'), ['class' => 'text-right bolder blue col-sm-1']) ?>
+            'class'          => 'col-sm-10',])
+            ->label(yii::t('conf', 'env'), ['class' => 'text-right bolder blue col-sm-2']) ?>
+        <div class="clearfix"></div>
+        <?= $form->field($conf, 'apply_template')->dropDownList([
+            Project::MBD_BASIC => \Yii::t('w', 'conf_apply_template_' . Project::MBD_BASIC),
+            Project::PAOPAO => \Yii::t('w', 'conf_apply_template_' . Project::PAOPAO),
+        ],[
+            'class'          => 'col-sm-10',])
+            ->label(yii::t('conf', 'apply template'), ['class' => 'text-right bolder blue col-sm-2']) ?>
         <div class="clearfix"></div>
         <?php if (empty($_GET['projectId'])) { ?>
         <div class="widget-box transparent" id="recent-box" style="margin-top:15px">

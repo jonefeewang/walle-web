@@ -24,6 +24,14 @@ use yii\widgets\ActiveForm;
             <span><?= \Yii::t('w', 'conf_level_' . $conf->level) ?></span>
         </div>
     </div>
+    <div class="profile-info-row">
+        <div class="profile-info-name"> <?= yii::t('conf', 'apply template') ?> </div>
+
+        <div class="profile-info-value">
+            <i class="icon-map-marker light-orange bigger-110"></i>
+            <span><?= \Yii::t('w', 'conf_apply_template_' . $conf->apply_template) ?></span>
+        </div>
+    </div>
 
     <div class="profile-info-row">
         <div class="profile-info-name"> <?= yii::t('conf', 'url') ?> </div>

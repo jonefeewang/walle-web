@@ -26,6 +26,10 @@ return [
     'conf_level_2' => '预发布环境',
     'conf_level_3' => '线上环境',
 
+    'conf_apply_template_1'=>'基线申请模板',
+    'conf_apply_template_2'=>'普通申请模板',
+
+
     'default trunk' => '默认无trunk',
     'conf_status_0' => '无效',
     'conf_status_1' => '有效',

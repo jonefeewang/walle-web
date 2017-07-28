@@ -46,13 +46,13 @@ class Project extends \yii\db\ActiveRecord
     const STATUS_VALID = 1;
 
     // 测试环境
-    const LEVEL_TEST  = 1;
+    const LEVEL_TEST = 1;
 
     // 仿真环境
-    const LEVEL_SIMU  = 2;
+    const LEVEL_SIMU = 2;
 
     // 线上环境
-    const LEVEL_PROD  = 3;
+    const LEVEL_PROD = 3;
 
     const AUDIT_YES = 1;
 
@@ -68,12 +68,19 @@ class Project extends \yii\db\ActiveRecord
 
     const REPO_SVN = 'svn';
 
+    const MBD_BASIC = 1;
+    const PAOPAO = 2;
+
     public static $CONF;
 
     public static $LEVEL = [
         self::LEVEL_TEST => 'test',
         self::LEVEL_SIMU => 'simu',
         self::LEVEL_PROD => 'prod',
+    ];
+    public static $APPLY_TEMPLATE = [
+        self::MBD_BASIC => 'submit-git',
+        self::PAOPAO => 'submit-git-paopao',
     ];
 
     /**
@@ -105,7 +112,7 @@ class Project extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'repo_url', 'name', 'level', 'deploy_from', 'release_user', 'release_to', 'release_library', 'hosts', 'keep_version_num'], 'required'],
+            [['user_id', 'repo_url', 'name', 'level', 'deploy_from', 'release_user', 'release_to', 'release_library', 'hosts', 'keep_version_num', 'apply_template'], 'required'],
             [['user_id', 'level', 'status', 'post_release_delay', 'audit', 'ansible', 'keep_version_num'], 'integer'],
             [['excludes', 'hosts', 'pre_deploy', 'post_deploy', 'pre_release', 'post_release'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
@@ -124,31 +131,31 @@ class Project extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                 => 'ID',
-            'user_id'            => 'User ID',
-            'name'               => '项目名字',
-            'level'              => '环境级别',
-            'status'             => 'Status',
-            'version'            => 'Version',
-            'created_at'         => 'Created At',
-            'deploy_from'        => '检出仓库',
-            'excludes'           => '排除文件列表',
-            'release_user'       => '目标机器部署代码用户',
-            'release_to'         => '代码的webroot',
-            'release_library'    => '发布版本库',
-            'hosts'              => '目标机器',
-            'pre_deploy'         => '宿主机代码检出前置任务',
-            'post_deploy'        => '宿主机同步前置任务',
-            'pre_release'        => '目标机更新版本前置任务',
-            'post_release'       => '目标机更新版本后置任务',
+            'id' => 'ID',
+            'user_id' => 'User ID',
+            'name' => '项目名字',
+            'level' => '环境级别',
+            'status' => 'Status',
+            'version' => 'Version',
+            'created_at' => 'Created At',
+            'deploy_from' => '检出仓库',
+            'excludes' => '排除文件列表',
+            'release_user' => '目标机器部署代码用户',
+            'release_to' => '代码的webroot',
+            'release_library' => '发布版本库',
+            'hosts' => '目标机器',
+            'pre_deploy' => '宿主机代码检出前置任务',
+            'post_deploy' => '宿主机同步前置任务',
+            'pre_release' => '目标机更新版本前置任务',
+            'post_release' => '目标机更新版本后置任务',
             'post_release_delay' => '后置任务时间间隔/延迟',
-            'repo_url'           => 'git/svn地址',
-            'repo_username'      => 'svn用户名',
-            'repo_password'      => 'svn密码',
-            'repo_mode'          => '分支/tag',
-            'audit'              => '任务需要审核？',
-            'ansible'            => '开启Ansible？',
-            'keep_version_num'   => '线上版本保留数',
+            'repo_url' => 'git/svn地址',
+            'repo_username' => 'svn用户名',
+            'repo_password' => 'svn密码',
+            'repo_mode' => '分支/tag',
+            'audit' => '任务需要审核？',
+            'ansible' => '开启Ansible？',
+            'keep_version_num' => '线上版本保留数',
         ];
     }
 
@@ -158,7 +165,8 @@ class Project extends \yii\db\ActiveRecord
      * @param $id
      * @return string|\yii\db\ActiveQuery
      */
-    public static function getConf($id = null) {
+    public static function getConf($id = null)
+    {
         if (empty(static::$CONF)) {
             static::$CONF = static::findOne($id);
         }
@@ -171,7 +179,8 @@ class Project extends \yii\db\ActiveRecord
      * @param $gitUrl
      * @return mixed
      */
-    public static function getGitProjectName($gitUrl) {
+    public static function getGitProjectName($gitUrl)
+    {
         if (preg_match('#.*/(.*?)\.git#', $gitUrl, $match)) {
             return $match[1];
         }
@@ -185,9 +194,10 @@ class Project extends \yii\db\ActiveRecord
      *
      * @return string
      */
-    public static function getDeployWorkspace($version) {
-        $from    = static::$CONF->deploy_from;
-        $env     = isset(static::$LEVEL[static::$CONF->level]) ? static::$LEVEL[static::$CONF->level] : 'unknow';
+    public static function getDeployWorkspace($version)
+    {
+        $from = static::$CONF->deploy_from;
+        $env = isset(static::$LEVEL[static::$CONF->level]) ? static::$LEVEL[static::$CONF->level] : 'unknow';
         $project = static::getGitProjectName(static::$CONF->repo_url);
 
         return sprintf("%s/%s/%s-%s", rtrim($from, '/'), rtrim($env, '/'), $project, $version);
@@ -201,7 +211,8 @@ class Project extends \yii\db\ActiveRecord
      * @param $version
      * @return string
      */
-    public static function getDeployPackagePath($version) {
+    public static function getDeployPackagePath($version)
+    {
 
         return sprintf('%s.tar.gz', static::getDeployWorkspace($version));
     }
@@ -212,9 +223,10 @@ class Project extends \yii\db\ActiveRecord
      *
      * @return string
      */
-    public static function getDeployFromDir() {
-        $from    = static::$CONF->deploy_from;
-        $env     = isset(static::$LEVEL[static::$CONF->level]) ? static::$LEVEL[static::$CONF->level] : 'unknow';
+    public static function getDeployFromDir()
+    {
+        $from = static::$CONF->deploy_from;
+        $env = isset(static::$LEVEL[static::$CONF->level]) ? static::$LEVEL[static::$CONF->level] : 'unknow';
         $project = static::getGitProjectName(static::$CONF->repo_url);
 
         return sprintf("%s/%s/%s", rtrim($from, '/'), rtrim($env, '/'), $project);
@@ -226,7 +238,8 @@ class Project extends \yii\db\ActiveRecord
      * @param string $branchName
      * @return string
      */
-    public static function getSvnDeployBranchFromDir($branchName = 'trunk') {
+    public static function getSvnDeployBranchFromDir($branchName = 'trunk')
+    {
 
         $deployFromDir = static::getDeployFromDir();
         if ($branchName == '') {
@@ -249,7 +262,8 @@ class Project extends \yii\db\ActiveRecord
      * @param $version
      * @return string
      */
-    public static function getTargetWorkspace() {
+    public static function getTargetWorkspace()
+    {
         return rtrim(static::$CONF->release_to, '/');
     }
 
@@ -260,7 +274,8 @@ class Project extends \yii\db\ActiveRecord
      * @param $version
      * @return string
      */
-    public static function getReleaseVersionDir($version = '') {
+    public static function getReleaseVersionDir($version = '')
+    {
         return sprintf('%s/%s/%s', rtrim(static::$CONF->release_library, '/'),
             static::getGitProjectName(static::$CONF->repo_url), $version);
     }
@@ -272,7 +287,8 @@ class Project extends \yii\db\ActiveRecord
      * @param string $version
      * @return string
      */
-    public static function getReleaseVersionPackage($version = '') {
+    public static function getReleaseVersionPackage($version = '')
+    {
 
         return sprintf('%s.tar.gz', static::getReleaseVersionDir($version));
     }
@@ -280,7 +296,8 @@ class Project extends \yii\db\ActiveRecord
     /**
      * 获取当前进程配置的目标机器host列表
      */
-    public static function getHosts() {
+    public static function getHosts()
+    {
         return GlobalHelper::str2arr(static::$CONF->hosts);
     }
 
@@ -289,8 +306,9 @@ class Project extends \yii\db\ActiveRecord
      *
      * @return boolean
      */
-    public static function getAnsibleStatus() {
-        return (bool) static::$CONF->ansible;
+    public static function getAnsibleStatus()
+    {
+        return (bool)static::$CONF->ansible;
     }
 
     /**
@@ -301,7 +319,8 @@ class Project extends \yii\db\ActiveRecord
      * @param integer $projectId 可以传入指定的id
      * @return string
      */
-    public static function getAnsibleHostsFile($projectId = 0) {
+    public static function getAnsibleHostsFile($projectId = 0)
+    {
         if (!$projectId) {
             $projectId = static::$CONF->id;
         }
@@ -315,7 +334,8 @@ class Project extends \yii\db\ActiveRecord
      * @param bool $insert
      * @param array $changedAttributes
      */
-    public function afterSave($insert, $changedAttributes) {
+    public function afterSave($insert, $changedAttributes)
+    {
         parent::afterSave($insert, $changedAttributes);
         // 修改了项目repo_url，本地检出代码将被清空
         if (isset($changedAttributes['repo_url'])) {
@@ -336,7 +356,8 @@ class Project extends \yii\db\ActiveRecord
      *
      * @author wushuiyong
      */
-    public function afterDelete() {
+    public function afterDelete()
+    {
         parent::afterDelete();
         // 删除所有该项目的关系
         Group::deleteAll(['project_id' => $this->attributes['id']]);

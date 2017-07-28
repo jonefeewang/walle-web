@@ -14,6 +14,7 @@ return [
     'edit' => '配置项目',
     'name' => '项目名字:',
     'env' => '项目环境:',
+    'apply template'=>'上线申请单模板:',
     'url' => '地址:',
     'username' => '用户名:',
     'password' => '密码:',

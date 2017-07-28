@@ -44,7 +44,7 @@ class Task extends \yii\db\ActiveRecord
     /**
      * 任务通过
      */
-    const STATUS_PASS   = 1;
+    const STATUS_PASS = 1;
 
     /**
      * 任务拒绝
@@ -54,7 +54,7 @@ class Task extends \yii\db\ActiveRecord
     /**
      * 任务上线完成
      */
-    const STATUS_DONE   = 3;
+    const STATUS_DONE = 3;
 
     /**
      * 任务上线失败
@@ -64,7 +64,7 @@ class Task extends \yii\db\ActiveRecord
     /**
      * 可回滚
      */
-    const ROLLBACK_TRUE  = 1;
+    const ROLLBACK_TRUE = 1;
 
     /**
      * 不可回滚
@@ -91,9 +91,9 @@ class Task extends \yii\db\ActiveRecord
 
     public function init()
     {
-        $this->pass_review=true;
-        $this->pass_test=true;
-        $this->deploy_time= date('Y-m-d');
+        $this->pass_review = true;
+        $this->pass_test = true;
+        $this->deploy_time = date('Y-m-d');
         parent::init();
     }
 
@@ -119,10 +119,11 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'project_id', 'status', 'title'], 'required'],
+            [['user_id', 'project_id', 'status', 'title', 'reqm_type', 'reqm_source', 'developer', 'reviewer', 'deployer', 'tester', 'deploy_time'], 'required'],
             [['user_id', 'project_id', 'action', 'status', 'file_transmission_mode'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['file_list'], 'string'],
+            [['created_at', 'updated_at', 'temp_theme', 'baselib_config', 'rollback_time', 'regular_check'], 'safe'],
+            [['file_list', 'content'], 'string'],
+            [['deploy_time'], 'date', 'format' => "php:Y-m-d"],
             [['title', 'link_id', 'ex_link_id', 'commit_id', 'branch'], 'string', 'max' => 100],
         ];
     }
@@ -143,13 +144,27 @@ class Task extends \yii\db\ActiveRecord
             'ex_link_id' => 'Ex Link ID',
             'commit_id' => 'Commit ID',
             'created_at' => 'Created At',
-            'reqm_type'=>'需求类型',
-            'content'=>'修改内容',
-            'developer'=>'开发人员',
-            'reviewer'=>'代码review人',
-            'deployer'=>'上线人员',
+            'reqm_type' => '需求类型',
+            'content' => '修改内容',
+            'developer' => '开发人员',
+            'reviewer' => '代码review人',
+            'deployer' => '上线人员',
         ];
     }
+
+    /**
+     * 获取当前进程的项目配置
+     *
+     * @param $id
+     * @return string|\yii\db\ActiveQuery
+     */
+    public static function getTask($id = null)
+    {
+
+        return static::findOne($id);
+
+    }
+
 
     /**
      * 是否能进行部署
@@ -157,7 +172,8 @@ class Task extends \yii\db\ActiveRecord
      * @param $status
      * @return bool
      */
-    public static function canDeploy($status) {
+    public static function canDeploy($status)
+    {
         return in_array($status, [static::STATUS_PASS, static::STATUS_FAILED]);
     }
 
@@ -166,7 +182,8 @@ class Task extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
@@ -175,7 +192,8 @@ class Task extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProject() {
+    public function getProject()
+    {
         return $this->hasOne(Project::className(), ['id' => 'project_id']);
     }
 
@@ -184,7 +202,8 @@ class Task extends \yii\db\ActiveRecord
      *
      * @return array|string
      */
-    public function getCommandFiles() {
+    public function getCommandFiles()
+    {
 
         if ($this->file_transmission_mode == static::FILE_TRANSMISSION_MODE_FULL) {
             return '.';
@@ -205,7 +224,7 @@ class Task extends \yii\db\ActiveRecord
      */
     public function getRollbackCommitId()
     {
-        return $this->ex_link_id ? static::find()->where(['link_id'=>$this->ex_link_id])->orderBy(['id'=>SORT_ASC])->select('commit_id')->scalar():'';
+        return $this->ex_link_id ? static::find()->where(['link_id' => $this->ex_link_id])->orderBy(['id' => SORT_ASC])->select('commit_id')->scalar() : '';
     }
 
 }

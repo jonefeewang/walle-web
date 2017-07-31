@@ -65,18 +65,18 @@ use yii\jui\DatePicker;
 
         <div class="row">
             <div class="col-sm-4">
-                <?= $form->field($task, 'developer')->textInput(['value' => Yii::$app->user->identity->username])->label(yii::t('task', 'developer title'), ['class' => 'control-label bolder blue']) ?>
+                <?= $form->field($task, 'developer')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'developer title'), ['class' => 'control-label bolder blue']) ?>
             </div>
             <div class="col-sm-2">
-                <?= $form->field($task, 'deployer')->textInput(['value' => Yii::$app->user->identity->username])->label(yii::t('task', 'deployer title'), ['class' => ' bolder blue']) ?>
+                <?= $form->field($task, 'deployer')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'deployer title'), ['class' => ' bolder blue']) ?>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-4">
-                <?= $form->field($task, 'reviewer')->textInput(['value' => Yii::$app->user->identity->username])->label(yii::t('task', 'reviewer title'), ['class' => 'control-label bolder blue']) ?>
+                <?= $form->field($task, 'reviewer')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'reviewer title'), ['class' => 'control-label bolder blue']) ?>
             </div>
             <div class="col-sm-4">
-                <?= $form->field($task, 'tester')->textInput(['value' => Yii::$app->user->identity->username])->label(yii::t('task', 'tester title'), ['class' => 'control-label bolder blue']) ?>
+                <?= $form->field($task, 'tester')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'tester title'), ['class' => 'control-label bolder blue']) ?>
             </div>
         </div>
         <div class="row">

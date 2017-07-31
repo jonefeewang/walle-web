@@ -82,6 +82,7 @@ class WalleController extends Controller
         try {
             if ($this->task->action == TaskModel::ACTION_ONLINE) {
                 $this->_makeVersion();
+                $this->_initAnsibleEnv();
                 $this->_initWorkspace();
                 $this->_preDeploy();
                 $this->_revisionUpdate();
@@ -135,13 +136,13 @@ class WalleController extends Controller
         $projectTable = Project::tableName();
         $groupTable = Group::tableName();
         $projects = Project::find()
-                           ->leftJoin(Group::tableName(), "`$groupTable`.`project_id` = `$projectTable`.`id`")
-                           ->where([
-                               "`$projectTable`.status" => Project::STATUS_VALID,
-                               "`$groupTable`.`user_id`" => $this->uid
-                           ])
-                           ->asArray()
-                           ->all();
+            ->leftJoin(Group::tableName(), "`$groupTable`.`project_id` = `$projectTable`.`id`")
+            ->where([
+                "`$projectTable`.status" => Project::STATUS_VALID,
+                "`$groupTable`.`user_id`" => $this->uid
+            ])
+            ->asArray()
+            ->all();
 
         return $this->render('check', [
             'projects' => $projects,
@@ -347,9 +348,9 @@ class WalleController extends Controller
     public function actionDeploy($taskId)
     {
         $this->task = TaskModel::find()
-                               ->where(['id' => $taskId])
-                               ->with(['project'])
-                               ->one();
+            ->where(['id' => $taskId])
+            ->with(['project'])
+            ->one();
         if (!$this->task) {
             throw new \Exception(yii::t('walle', 'deployment id not exists'));
         }
@@ -370,11 +371,11 @@ class WalleController extends Controller
     public function actionGetProcess($taskId)
     {
         $record = Record::find()
-                        ->select(['percent' => 'action', 'status', 'memo', 'command'])
-                        ->where(['task_id' => $taskId,])
-                        ->orderBy('id desc')
-                        ->asArray()
-                        ->one();
+            ->select(['percent' => 'action', 'status', 'memo', 'command'])
+            ->where(['task_id' => $taskId,])
+            ->orderBy('id desc')
+            ->asArray()
+            ->one();
         $record['memo'] = stripslashes($record['memo']);
         $record['command'] = stripslashes($record['command']);
 
@@ -390,6 +391,22 @@ class WalleController extends Controller
         $this->task->link_id = $version;
 
         return $this->task->save();
+    }
+
+    private function _initAnsibleEnv()
+    {
+        if (!$this->conf->ansible) {
+            // 未开启ansible, 不用保存
+            return true;
+        }
+
+        $filePath = Project::getAnsibleHostsFile($this->conf->id);
+        $ret = @file_put_contents($filePath, $this->conf->hosts);
+        if (!$ret) {
+            throw new \Exception(yii::t('conf', 'ansible hosts save error', ['path' => $filePath]));
+        }
+
+        return true;
     }
 
     /**
@@ -517,7 +534,7 @@ class WalleController extends Controller
      * 执行远程服务器任务集合
      * 对于目标机器更多的时候是一台机器完成一组命令，而不是每条命令逐台机器执行
      *
-     * @param string  $version
+     * @param string $version
      * @param integer $delay 每台机器延迟执行post_release任务间隔, 不推荐使用, 仅当业务无法平滑重启时使用
      * @throws \Exception
      */
@@ -560,12 +577,12 @@ class WalleController extends Controller
         $where = ' status = :status AND project_id = :project_id ';
         $param = [':status' => TaskModel::STATUS_DONE, ':project_id' => $this->task->project_id];
         $offset = TaskModel::find()
-                           ->select(['id'])
-                           ->where($where, $param)
-                           ->orderBy(['id' => SORT_DESC])
-                           ->offset($this->conf->keep_version_num)
-                           ->limit(1)
-                           ->scalar();
+            ->select(['id'])
+            ->where($where, $param)
+            ->orderBy(['id' => SORT_DESC])
+            ->offset($this->conf->keep_version_num)
+            ->limit(1)
+            ->scalar();
         if (!$offset) {
             return true;
         }

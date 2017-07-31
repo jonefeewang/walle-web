@@ -64,8 +64,10 @@ return [
     'need login' => '请先登录，再操作：）',
     'something went wrong' => '出错',
 
+    'login username tip' =>'公司邮箱账号,不带@qiyi.com',
+    'login password tip' =>'公司邮箱密码',
     'log-platform' => '登录平台',
-    'login username' => '邮箱' ,
+    'login username' => '用户名' ,
     'login password' => '密码',
     'login forgot password' => '忘记密码',
     'login register user' => '注册账号',

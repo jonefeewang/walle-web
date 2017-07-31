@@ -23,20 +23,4 @@ return [
     'mail-suffix'                       => [
         '*', # 支持多个
     ],
-    'user_driver'                       => 'local',
-    'ldap'                              => [
-        'host'           => 'adldap.qiyi.domain',
-        'port'           => 389,
-        'username'       => 'cn=root,dc=iqiyi,dc=pps',
-        'password'       => 'password',
-        'accountBase'    => 'ou=qiyi,dc=iqyi,dc=pps',
-        'accountPattern' => 'sAMAcountName={0}',
-        'identity'       => 'uid',
-        'attributesMap'  => [
-            'uid'       => 'username',
-            'mail'      => 'email',
-            'givenName' => 'realname',
-        ],
-        'ssl'            => false,
-    ],
 ];

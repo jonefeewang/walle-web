@@ -79,7 +79,7 @@ class Command
         $this->log = trim($log);
 
         $this->log($log);
-        $this->log('---------------------------------');
+        $this->log('---------------------------------execution result -->'.$this->status);
 
         return $this->status;
     }

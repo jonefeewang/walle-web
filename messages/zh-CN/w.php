@@ -1,16 +1,21 @@
 <?php
 
 return [
-    'w' => 'Walle 瓦力平台',
+    'w' => '奇创平台',
+    'w title' => '奇创',
     'w platform' => '平台',
+
+    'cross' => '--',
 
     'bool_0' => 'No',
     'bool_1' => 'Yes',
 
     'user_role_1' => '开发者',
     'user_role_2' => '管理员',
+    'user_role_3' => '产品',
+    'user_role_2' => '测试',
 
-    'task_status_0' => '新提交',
+    'task_status_0' => '提交上线',
     'task_status_1' => '审核通过',
     'task_status_2' => '审核拒绝',
     'task_status_3' => '上线完成',
@@ -56,7 +61,7 @@ return [
     'dropdown reset password' => '修改密码',
     'dropdown logout' => '退出',
     'menu config project' => '项目配置',
-    'menu task list' => '我的上线单',
+    'menu task list' => '上线申请单',
     'menu submit task' => '提交上线单',
     'menu file md5' => '线上文件指纹',
     'breadcrumb index' => '首页',

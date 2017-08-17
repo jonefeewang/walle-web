@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\components\Command;
+use app\models\User;
 use yii;
 use yii\data\Pagination;
 use yii\helpers\Url;
@@ -82,7 +84,7 @@ class TaskController extends Controller
      * @return string
      * @throws
      */
-    public function actionSubmit($projectId = null,$taskId=null)
+    public function actionSubmit($projectId = null, $taskId = null)
     {
 
         // 为了方便用户更改表名，避免表名直接定死
@@ -127,6 +129,7 @@ class TaskController extends Controller
                 $task->project_id = $projectId;
                 $task->status = $status;
                 if ($task->save()) {
+                    $this->sendEmailUpdate($task, $projectId);
                     return $this->redirect('@web/task/');
                 }
             }
@@ -137,11 +140,11 @@ class TaskController extends Controller
         } else
             $tpl = 'submit-svn';
 
-         if($taskId) { //是否为预览模式
-             $task = Task::getTask($taskId);
-             $tpl .= '-preview';
-             $this->layout = 'modal';
-         }
+        if ($taskId) { //是否为预览模式
+            $task = Task::getTask($taskId);
+            $tpl .= '-preview';
+            $this->layout = 'modal';
+        }
 
         return $this->render($tpl, [
             'task' => $task,
@@ -238,7 +241,36 @@ class TaskController extends Controller
 
         $task->status = $operation ? Task::STATUS_PASS : Task::STATUS_REFUSE;
         $task->save();
+        $this->sendEmailUpdate($task, $task->project_id);
         static::renderJson(['status' => \Yii::t('w', 'task_status_' . $task->status)]);
+    }
+
+    /**
+     * Sends an email with a link, for resetting the password.
+     *
+     * @return boolean whether the email was send
+     */
+    public function sendEmailUpdate($task, $projectId)
+    {
+
+        ##找出参与项目的所有人的email
+        $users = User::oriFind()
+            ->select('user.*')
+            ->leftJoin('`group`', '`group`.user_id=user.id')
+            ->where(['`group`.project_id' => $projectId])
+            ->with('group')
+            ->all();
+
+        foreach ($users as $user) {
+            Command::log('send email --' . Yii::$app->mail->compose('taskStatus', ['user' => $user, 'task' => $task,'conf'=>Project::getConf($projectId)])
+                    ->setFrom(Yii::$app->mail->messageConfig['from'])
+                    ->setTo($user->email)
+                    ->setSubject(Yii::t('w', 'task_status_' . $task['status']) .Yii::t('w', 'cross') . $task->title)
+                    ->send());
+        }
+
+
+        return true;
     }
 
 }

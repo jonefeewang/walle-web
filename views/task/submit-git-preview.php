@@ -4,8 +4,6 @@
  */
 $this->title = $conf->name;
 
-use yii\widgets\ActiveForm;
-
 ?>
 
 <div class="profile-user-info">

@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'w' => 'Walle Platform',
+    'w' => 'QiChuang Platform',
     'w platform' => 'Platform',
+    'w title' => 'QiChuang',
 
     'bool_0' => 'No',
     'bool_1' => 'Yes',

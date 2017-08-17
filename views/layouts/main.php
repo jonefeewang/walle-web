@@ -18,7 +18,7 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
-    <title><?= Html::encode($this->title) ?> - <?= yii::t('w', 'walle') ?></title>
+    <title><?= Html::encode($this->title) ?> - <?= yii::t('w', 'w') ?></title>
     <link href="<?= Url::to('@web/dist/css/bootstrap.min.css') ?>" rel="stylesheet" />
     <link href="<?= Url::to('@web/dist/css/font-awesome.min.css') ?>" rel="stylesheet" />
 
@@ -70,7 +70,7 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
     <div class="navbar-container" id="navbar-container">
         <div class="pull-left">
             <a href="javascript:;" class="navbar-brand">
-                <small>Walle</small>
+                <small><?= yii::t('w', 'w') ?></small>
             </a><!-- /.brand -->
         </div><!-- /.navbar-header -->
 

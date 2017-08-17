@@ -87,4 +87,7 @@ return [
     'js copy failed' => '复制失败: ',
     'js copy project confirm' => '确定要复制该项目？',
 
+    'project' => '项目',
+    'has' => '已经',
+
 ];

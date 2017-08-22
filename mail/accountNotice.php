@@ -14,8 +14,8 @@ $confirmationLink = Yii::$app->urlManager->createAbsoluteUrl(['site/confirm-emai
 <br><br>
 <span style="text-indent: 2em"><?= yii::t('user', 'notice account has been opened') ?></span>
 <br>
-<?= yii::t('user', 'email') ?> : <?= $user->email ?><br>
-<?= yii::t('user', 'password') ?> : <?= $user->password ?><br>
+<?= yii::t('user', 'email') ?> :  <?= $user->email ?><br>
+<?= yii::t('user', 'password') ?> : <?= yii::t('user', 'passwd_company') ?><br>
 <?= yii::t('user', 'role') ?> : <?= \Yii::t('w', 'user_role_' . $user->role) ?><br>
 <h3><?= Html::a(yii::t('user', 'active'), $confirmationLink) ?></h3>
 <a href="<?= $confirmationLink ?>"><?= $confirmationLink ?></a>

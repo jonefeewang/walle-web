@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170726_070258_add_reqm_source_column_temp_theme_column_baselib_config_column_deploy_date_column_pass_review_column_pass_test_column_rollback_time_column_regular_check_column_to_task extends Migration
+class m170726_070258_add_reqm_source extends Migration
 {
     public function up()
     {

@@ -33,6 +33,7 @@ return [
     'users' => '用户管理',
     'search placeholder' => '用户或邮箱',
     'email' => '邮箱',
+    'passwd_company' => '公司邮箱登录密码',
     'realname' => '真实用户名',
     'is admin' => '是否管理员',
     'status' => '状态',

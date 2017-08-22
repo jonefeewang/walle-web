@@ -240,7 +240,7 @@ class UserController extends Controller {
                 Yii::$app->mail->compose('accountNotice', ['user' => $user])
                     ->setFrom(Yii::$app->mail->messageConfig['from'])
                     ->setTo($user->email)
-                    ->setSubject('瓦力平台 - 帐号已开通')
+                    ->setSubject('奇创平台 - 帐号已开通')
                     ->send();
 
                 return $this->redirect('@web/user/list');

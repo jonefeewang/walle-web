@@ -35,7 +35,7 @@ class AddUserForm extends Model
             ['password', 'string', 'min' => 6, 'max' => 30],
 
             ['realname', 'string', 'min' => 2],
-            ['role', 'in', 'range' => [User::ROLE_DEV, User::ROLE_REVIEWER, User::ROLE_DEPLOYER, User::ROLE_TESTER]],
+            ['role', 'in', 'range' => [User::ROLE_DEV, User::ROLE_REVIEWER, User::ROLE_DEPLOYER, User::ROLE_TESTER,User::ROLE_PRODUCT]],
         ];
     }
 

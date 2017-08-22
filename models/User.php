@@ -132,7 +132,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'in', 'range' => [self::STATUS_ADMIN_ACTIVE, self::STATUS_ACTIVE, self::STATUS_INVALID]],
 
             ['role', 'default', 'value' => self::ROLE_DEV],
-            ['role', 'in', 'range' => [self::ROLE_DEV, self::ROLE_REVIEWER, self::ROLE_TESTER, self::ROLE_DEPLOYER]],
+            ['role', 'in', 'range' => [self::ROLE_DEV, self::ROLE_REVIEWER, self::ROLE_TESTER, self::ROLE_DEPLOYER,self::ROLE_PRODUCT]],
 
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'unique'],

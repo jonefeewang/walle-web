@@ -30,6 +30,8 @@ use app\models\user;
             User::ROLE_REVIEWER => \Yii::t('w', 'user_role_' . User::ROLE_REVIEWER),
             User::ROLE_DEPLOYER => \Yii::t('w', 'user_role_' . User::ROLE_DEPLOYER),
             User::ROLE_TESTER => \Yii::t('w', 'user_role_' . User::ROLE_TESTER),
+            User::ROLE_TESTER => \Yii::t('w', 'user_role_' . User::ROLE_TESTER),
+            User::ROLE_PRODUCT => \Yii::t('w', 'user_role_' . User::ROLE_PRODUCT),
         ], ['class' => 'col-xs-5',]) ?>
         <div class="clearfix"></div>
         <div class="box-footer">

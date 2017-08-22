@@ -58,9 +58,21 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_DEV = 1;
 
     /**
-     * 管理员
+     * 项目上线单审核人员,如果status=2,则为最高管理员
      */
-    const ROLE_ADMIN = 2;
+    const ROLE_REVIEWER = 2;
+    /**
+     * 产品
+     */
+    const ROLE_DEPLOYER = 3;
+    /**
+     * 测试
+     */
+    const ROLE_TESTER = 4;
+    /**
+     * 产品
+     */
+    const ROLE_PRODUCT = 5;
 
     /**
      * 头像目录
@@ -120,7 +132,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'in', 'range' => [self::STATUS_ADMIN_ACTIVE, self::STATUS_ACTIVE, self::STATUS_INVALID]],
 
             ['role', 'default', 'value' => self::ROLE_DEV],
-            ['role', 'in', 'range' => [self::ROLE_DEV, self::ROLE_ADMIN]],
+            ['role', 'in', 'range' => [self::ROLE_DEV, self::ROLE_REVIEWER, self::ROLE_TESTER, self::ROLE_DEPLOYER]],
 
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'unique'],
@@ -238,6 +250,11 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Group::className(), ['user_id' => 'id',]);
     }
 
+    public function getTaskUser()
+    {
+        return $this->hasMany(TaskUser::className(), ['user_id' => 'id',]);
+    }
+
     /**
      * Validates password
      *
@@ -327,7 +344,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getInactiveAdminList()
     {
         return static::find()
-            ->where(['is_email_verified' => static::MAIL_ACTIVE, 'role' => static::ROLE_ADMIN, 'status' => static::STATUS_ACTIVE])
+            ->where(['is_email_verified' => static::MAIL_ACTIVE, 'role' => static::ROLE_REVIEWER, 'status' => static::STATUS_ACTIVE])
             ->asArray()->all();
     }
 }

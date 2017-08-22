@@ -151,7 +151,7 @@ class UserController extends Controller {
     public function actionToAdmin($uid) {
         $this->validateAdmin();
         if ($uid) {
-            User::updateAll(['role' => User::ROLE_ADMIN], ['id' => $uid]);
+            User::updateAll(['role' => User::ROLE_REVIEWER], ['id' => $uid]);
         }
 
         $this->renderJson([], self::SUCCESS);

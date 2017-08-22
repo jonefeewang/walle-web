@@ -347,7 +347,7 @@ class Project extends \yii\db\ActiveRecord
         }
         // 插入一条管理员关系
         if ($insert) {
-            Group::addGroupUser($this->attributes['id'], [$this->attributes['user_id']], Group::TYPE_ADMIN);
+            Group::addGroupUser($this->attributes['id'], [$this->attributes['user_id']], Group::TYPE_REVIEWER);
         }
     }
 

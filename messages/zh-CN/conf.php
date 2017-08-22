@@ -66,6 +66,8 @@ return [
     'audit manager tip' => '审核管理员可审核上线单',
     'add audit manager' => '设为审核管理员',
     'cancel audit manager' => '取消审核管理员',
+    'add dev' => '设为开发员',
+    'cancel dev' => '取消开发员',
     'js set audit manager failed' => '设置失败: ',
 
     'index' => '项目配置',

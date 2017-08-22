@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\components\Command;
+use app\models\forms\TaskUserModel;
+use app\models\TaskUser;
 use app\models\User;
 use yii;
 use yii\data\Pagination;
@@ -30,7 +32,8 @@ class TaskController extends Controller
         $list = Task::find()
             ->with('user')
             ->with('project')
-            ->where(['user_id' => $this->uid]);
+            ->leftJoin("group","task.project_id=group.project_id")
+            ->where(['group.user_id' => $this->uid]);
 
         $projectTable = Project::tableName();
         $groupTable = Group::tableName();
@@ -46,7 +49,7 @@ class TaskController extends Controller
         // 有审核权限的任务
         $auditProjects = Group::getAuditProjectIds($this->uid);
         if ($auditProjects) {
-            $list->orWhere(['project_id' => $auditProjects]);
+            $list->orWhere(['task.project_id' => $auditProjects]);
         }
 
         $kw = \Yii::$app->request->post('kw');
@@ -56,7 +59,7 @@ class TaskController extends Controller
 
         $projectId = (int)\Yii::$app->request->post('project_id');
         if (!empty($projectId)) {
-            $list->andWhere(['=', 'project_id', $projectId]);
+            $list->andWhere(['=', 'task.project_id', $projectId]);
         }
 
         $tasks = $list->orderBy('id desc');
@@ -84,7 +87,7 @@ class TaskController extends Controller
      * @return string
      * @throws
      */
-    public function actionSubmit($projectId = null, $taskId = null)
+    public function actionSubmit($projectId = null, $taskId = null, $action = "new")
     {
 
         // 为了方便用户更改表名，避免表名直接定死
@@ -107,6 +110,7 @@ class TaskController extends Controller
         }
 
         $task = new Task();
+        $taskUserModel = new TaskUserModel();
 
         $conf = Project::getConf($projectId);
         if (!$conf) {
@@ -122,14 +126,62 @@ class TaskController extends Controller
                 throw new \Exception(yii::t('task', 'you are not the member of project'));
             }
 
-            if ($task->load(\Yii::$app->request->post())) {
+            if ($task->load(\Yii::$app->request->post()) && $taskUserModel->load(\Yii::$app->request->post())) {
                 // 是否需要审核
+                // 添加上线申请单
                 $status = $conf->audit == Project::AUDIT_YES ? Task::STATUS_SUBMIT : Task::STATUS_PASS;
                 $task->user_id = $this->uid;
                 $task->project_id = $projectId;
                 $task->status = $status;
+
+
                 if ($task->save()) {
-                    $this->sendEmailUpdate($task, $projectId);
+                    $taskUserList = array();
+
+                    //上线单保存成功后,将上线单涉及的人全部保存起来,
+
+
+                    //开发者
+                    foreach ($taskUserModel->developer as $userId) {
+                        $taskUser = new TaskUser();
+                        $taskUser->user_id = $userId;
+                        $taskUser->task_id = $task->id;
+                        $taskUser->role = 1;
+                        $taskUserList[] = $taskUser;
+                    }
+
+                    //review人员
+                    foreach ($taskUserModel->reviewer as $userId) {
+                        $taskUser = new TaskUser();
+                        $taskUser->user_id = $userId;
+                        $taskUser->task_id = $task->id;
+                        $taskUser->role = 2;
+                        $taskUserList[] = $taskUser;
+                    }
+                    //上线人员
+                    foreach ($taskUserModel->deployer as $userId) {
+                        $taskUser = new TaskUser();
+                        $taskUser->user_id = $userId;
+                        $taskUser->task_id = $task->id;
+                        $taskUser->role = 3;
+                        $taskUserList[] = $taskUser;
+                    }
+                    //测试人员
+                    foreach ($taskUserModel->tester as $userId) {
+                        $taskUser = new TaskUser();
+                        $taskUser->user_id = $userId;
+                        $taskUser->task_id = $task->id;
+                        $taskUser->role = 4;
+                        $taskUserList[] = $taskUser;
+                    }
+
+                    $taskUser = new TaskUser();
+
+                    //批量插入
+                    if (count($taskUserList) > 0)
+                        Yii::$app->db->createCommand()->batchInsert(TaskUser::tableName(), $taskUser->attributes(), $taskUserList)->execute();
+
+                    $this->sendEmailUpdate($task, $projectId, $status);
                     return $this->redirect('@web/task/');
                 }
             }
@@ -140,15 +192,67 @@ class TaskController extends Controller
         } else
             $tpl = 'submit-svn';
 
-        if ($taskId) { //是否为预览模式
+        $userAry = array();
+        if ($action == "new") {
+            // 列出项目相关的所有用户
+            $users = User::find()
+                ->select(['id', 'email', 'realname'])
+                ->where(['is_email_verified' => 1])
+                ->asArray()->all();
+            foreach ($users as $user) {
+                $userAry[$user['id']] = $user['email'] . '-' . $user['realname'];
+            }
+        } else if ($action == "deploy") {
+            $this->actionTaskDeploy($taskId);
+            return $this->redirect('@web/task/');
+
+        } else if ($action == "retest") {
+            $this->actionTaskRetest($taskId);
+            return $this->redirect('@web/task/');
+
+        } else if ($action == "preview") { //是否为预览模式
             $task = Task::getTask($taskId);
             $tpl .= '-preview';
             $this->layout = 'modal';
+
+
+            $taskUsers = (new \Yii\db\Query())
+                ->select('user.realname,user.email,taskuser.role')
+                ->from('taskuser')
+                ->leftJoin('user', '`taskuser`.user_id=user.id')
+                ->where(['`taskuser`.task_id' => $taskId])
+                ->all();
+
+//            unset($taskUserModel->developer, $taskUserModel->reviewer, $taskUserModel->deployer, $taskUserModel->tester);
+            $taskUserModel->developer = null;
+            $taskUserModel->reviewer = null;
+            $taskUserModel->deployer = null;
+            $taskUserModel->tester = null;
+            foreach ($taskUsers as $taskUser) {
+                switch ($taskUser['role']) {
+                    case 1:
+                        $taskUserModel->developer[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                        break;
+                    case 2:
+                        $taskUserModel->reviewer[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                        break;
+                    case 3:
+                        $taskUserModel->deployer[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                        break;
+                    case 4:
+                        $taskUserModel->tester[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                        break;
+                }
+
+            }
+
         }
 
         return $this->render($tpl, [
             'task' => $task,
             'conf' => $conf,
+            'users' => $userAry,
+            'taskUserModel' => $taskUserModel,
         ]);
     }
 
@@ -222,6 +326,44 @@ class TaskController extends Controller
         }
     }
 
+
+    /**
+     * 任务上线
+     *
+     * @param $id
+     * @param $operation
+     */
+    public function actionTaskDeploy($id)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            static::renderJson([], -1, yii::t('task', 'unknown deployment bill'));
+        }
+        $task->status = Task::STATUS_DONE;
+        $task->save();
+        $this->sendEmailUpdate($task, $task->project_id, $task->status);
+        static::renderJson(['status' => \Yii::t('w', 'task_status_' . $task->status)]);
+    }
+    /**
+     * 线上回测
+     *
+     * @param $id
+     * @param $operation
+     */
+    public function actionTaskRetest($id)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            static::renderJson([], -1, yii::t('task', 'unknown deployment bill'));
+        }
+
+        $task->status = Task::STATUS_PASS_ONLINE_TEST;
+        $task->save();
+        $this->sendEmailUpdate($task, $task->project_id, $task->status);
+        static::renderJson(['status' => \Yii::t('w', 'task_status_' . $task->status)]);
+    }
+
+
     /**
      * 任务审核
      *
@@ -241,7 +383,7 @@ class TaskController extends Controller
 
         $task->status = $operation ? Task::STATUS_PASS : Task::STATUS_REFUSE;
         $task->save();
-        $this->sendEmailUpdate($task, $task->project_id);
+        $this->sendEmailUpdate($task, $task->project_id, $task->status);
         static::renderJson(['status' => \Yii::t('w', 'task_status_' . $task->status)]);
     }
 
@@ -250,9 +392,18 @@ class TaskController extends Controller
      *
      * @return boolean whether the email was send
      */
-    public function sendEmailUpdate($task, $projectId)
+    public function sendEmailUpdate($task, $projectId, $status)
     {
 
+//        //开发人员-1,reviewer-2,deployer-3,tester-4
+//        $role=0;
+//        switch ($status){
+//            case 0: //申请单刚提交
+//
+//
+//
+//        }
+//
         ##找出参与项目的所有人的email
         $users = User::oriFind()
             ->select('user.*')
@@ -262,10 +413,11 @@ class TaskController extends Controller
             ->all();
 
         foreach ($users as $user) {
-            Command::log('send email --' . Yii::$app->mail->compose('taskStatus', ['user' => $user, 'task' => $task,'conf'=>Project::getConf($projectId)])
+            Command::log('send email --' . Yii::$app->mail->compose('taskStatus', ['user' => $user, 'task' => $task, 'conf' => Project::getConf($projectId)])
                     ->setFrom(Yii::$app->mail->messageConfig['from'])
                     ->setTo($user->email)
-                    ->setSubject(Yii::t('w', 'task_status_' . $task['status']) .Yii::t('w', 'cross') . $task->title)
+                    ->setSubject('【' . Yii::t('w', 'w') . Yii::t('w', 'cross')
+                        . Yii::t('w', 'task_status_' . $task['status']) . '】' . Yii::t('w', 'cross') . $task->title)
                     ->send());
         }
 

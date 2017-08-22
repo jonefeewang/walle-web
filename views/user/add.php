@@ -27,7 +27,9 @@ use app\models\user;
         <?= $form->field($model, 'role')->label(Yii::t('user', 'role'), ['class' => 'text-right bolder blue col-xs-2'])
             ->dropDownList([
             User::ROLE_DEV => \Yii::t('w', 'user_role_' . User::ROLE_DEV),
-            User::ROLE_ADMIN => \Yii::t('w', 'user_role_' . User::ROLE_ADMIN),
+            User::ROLE_REVIEWER => \Yii::t('w', 'user_role_' . User::ROLE_REVIEWER),
+            User::ROLE_DEPLOYER => \Yii::t('w', 'user_role_' . User::ROLE_DEPLOYER),
+            User::ROLE_TESTER => \Yii::t('w', 'user_role_' . User::ROLE_TESTER),
         ], ['class' => 'col-xs-5',]) ?>
         <div class="clearfix"></div>
         <div class="box-footer">

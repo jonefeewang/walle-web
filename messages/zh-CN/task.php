@@ -25,6 +25,7 @@ return [
     'l_status' => '当前状态',
     'l_opera' => '操作',
     'deploy' => '上线',
+    'retest ok'=>'回测成功',
     'rollback' => '回滚',
     'delete' => '删除',
     'select project title' => '选择项目',

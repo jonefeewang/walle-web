@@ -71,7 +71,7 @@ use yii\helpers\Url;
                     <div class="profile-info-value">
                         <span>
                             <?= \Yii::t('w', 'user_role_' . $user->role) ?>
-                            <?= $user->role == User::ROLE_ADMIN && $user->status != \app\models\User::STATUS_ADMIN_ACTIVE ? yii::t('user', 'un-auth') : '' ?>
+                            <?= $user->role == User::ROLE_REVIEWER && $user->status != \app\models\User::STATUS_ADMIN_ACTIVE ? yii::t('user', 'un-auth') : '' ?>
                         </span>
                     </div>
                 </div>

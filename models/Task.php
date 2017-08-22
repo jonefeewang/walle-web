@@ -62,6 +62,17 @@ class Task extends \yii\db\ActiveRecord
     const STATUS_FAILED = 4;
 
     /**
+     * 线上回测成功
+     */
+    const STATUS_PASS_ONLINE_TEST = 5;
+
+    /**
+     * 线上回测失败
+     */
+    const STATUS_FAIL_ONLINE_TEST = 6;
+
+
+    /**
      * 可回滚
      */
     const ROLLBACK_TRUE = 1;
@@ -70,6 +81,7 @@ class Task extends \yii\db\ActiveRecord
      * 不可回滚
      */
     const ROLLBACK_FALSE = 0;
+
 
     /**
      * 上线模式: 全量发布
@@ -94,6 +106,8 @@ class Task extends \yii\db\ActiveRecord
         $this->pass_review = true;
         $this->pass_test = true;
         $this->deploy_time = date('Y-m-d');
+//        $this->developer = \Yii::$app->user->getId();
+//        $this->deployer = \Yii::$app->user->getId();
         parent::init();
     }
 
@@ -119,7 +133,7 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'project_id', 'status', 'title', 'reqm_type', 'reqm_source', 'developer', 'reviewer', 'deployer', 'tester', 'deploy_time'], 'required'],
+            [['user_id', 'project_id', 'status', 'title', 'reqm_type', 'reqm_source', 'deploy_time'], 'required'],
             [['user_id', 'project_id', 'action', 'status', 'file_transmission_mode'], 'integer'],
             [['created_at', 'updated_at', 'temp_theme', 'baselib_config', 'rollback_time', 'regular_check'], 'safe'],
             [['file_list', 'content'], 'string'],
@@ -146,9 +160,6 @@ class Task extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'reqm_type' => '需求类型',
             'content' => '修改内容',
-            'developer' => '开发人员',
-            'reviewer' => '代码review人',
-            'deployer' => '上线人员',
         ];
     }
 

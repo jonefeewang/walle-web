@@ -64,55 +64,35 @@ use yii\jui\DatePicker;
 
 
         <div class="row">
-            <div class="col-sm-4">
-                <?= $form->field($task, 'developer')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'developer title'), ['class' => 'control-label bolder blue']) ?>
-            </div>
-            <div class="col-sm-2">
-                <?= $form->field($task, 'deployer')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'deployer title'), ['class' => ' bolder blue']) ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4">
-                <?= $form->field($task, 'reviewer')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'reviewer title'), ['class' => 'control-label bolder blue']) ?>
-            </div>
-            <div class="col-sm-4">
-                <?= $form->field($task, 'tester')->textInput(['value' => Yii::$app->user->identity->realname])->label(yii::t('task', 'tester title'), ['class' => 'control-label bolder blue']) ?>
-            </div>
-        </div>
-        <div class="row">
+            <div class="col-sm-8">
 
-            <div class="col-sm-4">
-                <?= $form->field($task, 'pass_review')->checkbox(['value' => true], false)->label(yii::t('task', 'pass_review title'), ['class' => 'control-label bolder blue']) ?>
-            </div>
+                <?= $form->field($taskUserModel, 'developer')->listBox($users, ['multiple' => 'true', 'data-placeholder' => yii::t('conf', 'search'), 'class' => 'width-100 chosen-select'])->label(Yii::t('task', 'developer title'), ['class' => 'control-label bolder blue']) ?>
 
-            <div class="col-sm-4">
-                <?= $form->field($task, 'pass_test')->checkbox(['value' => true], false)->label(yii::t('task', 'pass_test title'), ['class' => 'control-label bolder blue']) ?>
-            </div>
-        </div>
-
-        <div class="row">
-
-            <div class="col-sm-2">
-                <?= $form->field($task, 'rollback_time')->textInput(['value' => '30分钟'])->label(yii::t('task', 'rollback_time title'), ['class' => 'control-label bolder blue']) ?>
-            </div>
-            <div class="col-sm-2">
-                <?= $form->field($task, 'deploy_time')->widget(\yii\jui\DatePicker::classname(), [
-                    'language' => 'zh-CN',
-                    'dateFormat' => 'php:Y-m-d',
-                    'options'=>[ 'class'=>'form-control'],
-                ])->label(yii::t('task', 'deploy_time title'), ['class' => 'control-label bolder blue']) ?>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-8">
-                <?= $form->field($task, 'regular_check')->textarea([
-                    'value' => '>首页正常显示：检查通过'.PHP_EOL.'>频​道推荐页正常显示：检查通过'.PHP_EOL.'>频道片库页正常显示：检查通过'.PHP_EOL.'>电视剧中间一集正常播放：检查通过'.PHP_EOL.'>综艺片正常播放，选集正常：检查通过'.PHP_EOL.'>VIP电影正常播放：检查通过'.PHP_EOL.'>前贴/角标/暂停广告播放正常：检查通过',
-                    'data-placement' => 'top',
-                    'data-rel' => 'tooltip',
-                    'data-title' => yii::t('task', 'regular_check tip'),
-                    'rows' => 10,
-                ])->label(yii::t('task', 'regular_check title'), ['class' => 'control-label bolder blue']) ?>
+
+
+                <?= $form->field($taskUserModel, 'reviewer')->listBox($users, ['multiple' => 'true', 'data-placeholder' => yii::t('conf', 'search'), 'class' => 'width-100 chosen-select'])->label(Yii::t('task', 'reviewer title'), ['class' => 'control-label bolder blue']) ?>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8">
+                <?= $form->field($taskUserModel, 'deployer')->listBox($users, ['multiple' => 'true', 'data-placeholder' => yii::t('conf', 'search'), 'class' => 'width-100 chosen-select'])->label(Yii::t('task', 'deployer title'), ['class' => 'control-label bolder blue']) ?>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8">
+
+
+                <?= $form->field($taskUserModel, 'tester')->listBox($users, ['multiple' => 'true', 'data-placeholder' => yii::t('conf', 'search'), 'class' => 'width-100 chosen-select'])->label(Yii::t('task', 'tester title'), ['class' => 'control-label bolder blue']) ?>
+
             </div>
         </div>
 

@@ -62,7 +62,7 @@ $this->title = $conf->name;
         <div class="profile-info-name"> <?= yii::t('task', 'developer title') ?> </div>
 
         <div class="profile-info-value">
-            <span><?= $task->developer ?></span>
+            <span><?= implode('<br>', $taskUserModel->developer) ?></span>
         </div>
     </div>
 
@@ -70,7 +70,7 @@ $this->title = $conf->name;
         <div class="profile-info-name"> <?= yii::t('task', 'deployer title') ?> </div>
 
         <div class="profile-info-value">
-            <span><?= $task->deployer ?></span>
+            <span><?=  implode('<br>', $taskUserModel->deployer) ?></span>
         </div>
     </div>
 
@@ -78,7 +78,7 @@ $this->title = $conf->name;
         <div class="profile-info-name"> <?= yii::t('task', 'reviewer title') ?> </div>
 
         <div class="profile-info-value">
-            <span><?= str_replace(PHP_EOL, "<br>", $task->reviewer) ?></span>
+            <span><?=   implode('<br>', $taskUserModel->reviewer) ?></span>
         </div>
     </div>
 
@@ -86,7 +86,7 @@ $this->title = $conf->name;
         <div class="profile-info-name">  <?= yii::t('task', 'tester title') ?></div>
 
         <div class="profile-info-value">
-            <span><?= $task->tester ?></span>
+            <span><?=  implode('<br>', $taskUserModel->tester) ?></span>
         </div>
     </div>
 

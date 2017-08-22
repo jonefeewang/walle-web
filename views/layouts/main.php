@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -10,41 +11,42 @@ use app\widgets\Alert;
 use app\components\GlobalHelper;
 
 $user = User::findOne(\Yii::$app->user->id);
-$userName =  \Yii::$app->user->id ? $user->getName() : '';
+$userName = \Yii::$app->user->id ? $user->getName() : '';
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
     <title><?= Html::encode($this->title) ?> - <?= yii::t('w', 'w') ?></title>
-    <link href="<?= Url::to('@web/dist/css/bootstrap.min.css') ?>" rel="stylesheet" />
-    <link href="<?= Url::to('@web/dist/css/font-awesome.min.css') ?>" rel="stylesheet" />
+    <link href="<?= Url::to('@web/dist/css/bootstrap.min.css') ?>" rel="stylesheet"/>
+    <link href="<?= Url::to('@web/dist/css/font-awesome.min.css') ?>" rel="stylesheet"/>
 
     <!--[if IE 7]>
-    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/font-awesome-ie7.min.css') ?>" />
+    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/font-awesome-ie7.min.css') ?>"/>
     <![endif]-->
 
     <!-- ace styles -->
-    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/chosen.css') ?>" />
-    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace.min.css') ?>" />
-    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace-rtl.min.css') ?>" />
-    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace-skins.min.css') ?>" />
-    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/walle.css') ?>" />
+    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/chosen.css') ?>"/>
+    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace.min.css') ?>"/>
+    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace-rtl.min.css') ?>"/>
+    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace-skins.min.css') ?>"/>
+    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/walle.css') ?>"/>
 
     <!--[if lte IE 8]>
-    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace-ie.min.css') ?>" />
+    <link rel="stylesheet" href="<?= Url::to('@web/dist/css/ace-ie.min.css') ?>"/>
     <![endif]-->
 
     <!--[if !IE]> -->
     <script type="text/javascript">
-        window.jQuery || document.write("<script src='<?= Url::to('@web/dist/js/jquery-2.0.3.min.js') ?>'>"+"<"+"/script>");
+        window.jQuery || document.write("<script src='<?= Url::to('@web/dist/js/jquery-2.0.3.min.js') ?>'>" + "<" + "/script>");
     </script>
     <!-- <![endif]-->
 
     <!--[if IE]>
-    <script src='<?= Url::to('@web/dist/js/jquery-1.10.2.min.js') ?>'> <script>;
+    <script src='<?= Url::to(' @web/dist/js/jquery-1.10.2.min.js') ?>'>
+    <script>;
     <![endif]-->
 
 
@@ -64,7 +66,10 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 
 <div class="navbar navbar-default" id="navbar">
     <script type="text/javascript">
-        try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+        try {
+            ace.settings.check('navbar', 'fixed')
+        } catch (e) {
+        }
     </script>
 
     <div class="navbar-container" id="navbar-container">
@@ -76,76 +81,76 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 
         <div class="pull-right" role="navigation">
             <ul class="nav ace-nav">
-                <?php if (GlobalHelper::isValidAdmin() && ($count = count(User::getInactiveAdminList()))) { ?>
-                <li class="light-blue">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <i class="icon-bell-alt"></i>
-                        <span class="badge badge-important"><?= $count ?></span>
-                    </a>
+                <?php if (GlobalHelper::isValidAdmin() && ($count = count(User::getInactiveAdminList())) && false) { ?>
+                    <li class="light-blue">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <i class="icon-bell-alt"></i>
+                            <span class="badge badge-important"><?= $count ?></span>
+                        </a>
 
-                    <ul class="pull-right dropdown-navbar navbar-green dropdown-menu dropdown-caret dropdown-close">
+                        <ul class="pull-right dropdown-navbar navbar-green dropdown-menu dropdown-caret dropdown-close">
 
-                        <li class="dropdown-header">
-                            <i class="icon-envelope"></i>
-                            <?= yii::t('w', 'dropdown message') ?>
-                        </li>
-                        <li>
-                            <a href="<?= Url::to('@web/user/audit/') ?>">
-                                <div class="clearfix">
+                            <li class="dropdown-header">
+                                <i class="icon-envelope"></i>
+                                <?= yii::t('w', 'dropdown message') ?>
+                            </li>
+                            <li>
+                                <a href="<?= Url::to('@web/user/audit/') ?>">
+                                    <div class="clearfix">
                                     <span class="pull-left">
                                         <i class="btn btn-xs btn-primary icon-user"></i>
                                         <?= yii::t('w', 'dropdown project apply') ?>
                                     </span>
-                                    <span class="pull-right badge badge-info"><?= $count ?></span>
-                                </div>
-                            </a>
-                        </li>
-                        <!-- 等待开启
-                        <li>
-                            <a href="#">
-                                <div class="clearfix">
-											<span class="pull-left">
-												<i class="btn btn-xs no-hover btn-pink icon-comment"></i>
-												新闻评论
-											</span>
-                                    <span class="pull-right badge badge-info">+12</span>
-                                </div>
-                            </a>
-                        </li>
+                                        <span class="pull-right badge badge-info"><?= $count ?></span>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- 等待开启
+                            <li>
+                                <a href="#">
+                                    <div class="clearfix">
+                                                <span class="pull-left">
+                                                    <i class="btn btn-xs no-hover btn-pink icon-comment"></i>
+                                                    新闻评论
+                                                </span>
+                                        <span class="pull-right badge badge-info">+12</span>
+                                    </div>
+                                </a>
+                            </li>
 
-                        <li>
-                            <a href="#">
-                                <div class="clearfix">
-											<span class="pull-left">
-												<i class="btn btn-xs no-hover btn-success icon-shopping-cart"></i>
-												新订单
-											</span>
-                                    <span class="pull-right badge badge-success">+8</span>
-                                </div>
-                            </a>
-                        </li>
+                            <li>
+                                <a href="#">
+                                    <div class="clearfix">
+                                                <span class="pull-left">
+                                                    <i class="btn btn-xs no-hover btn-success icon-shopping-cart"></i>
+                                                    新订单
+                                                </span>
+                                        <span class="pull-right badge badge-success">+8</span>
+                                    </div>
+                                </a>
+                            </li>
 
-                        <li>
-                            <a href="#">
-                                <div class="clearfix">
-											<span class="pull-left">
-												<i class="btn btn-xs no-hover btn-info icon-twitter"></i>
-												粉丝
-											</span>
-                                    <span class="pull-right badge badge-info">+11</span>
-                                </div>
-                            </a>
-                        </li>
+                            <li>
+                                <a href="#">
+                                    <div class="clearfix">
+                                                <span class="pull-left">
+                                                    <i class="btn btn-xs no-hover btn-info icon-twitter"></i>
+                                                    粉丝
+                                                </span>
+                                        <span class="pull-right badge badge-info">+11</span>
+                                    </div>
+                                </a>
+                            </li>
 
-                        <li>
-                            <a href="#">
-                                查看所有通知
-                                <i class="icon-arrow-right"></i>
-                            </a>
-                        </li>
-                        -->
-                    </ul>
-                </li>
+                            <li>
+                                <a href="#">
+                                    查看所有通知
+                                    <i class="icon-arrow-right"></i>
+                                </a>
+                            </li>
+                            -->
+                        </ul>
+                    </li>
                 <?php } ?>
 
                 <li class="light-blue">
@@ -195,7 +200,10 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 
 <div class="main-container" id="main-container">
     <script type="text/javascript">
-        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+        try {
+            ace.settings.check('main-container', 'fixed')
+        } catch (e) {
+        }
     </script>
 
     <div class="main-container-inner">
@@ -205,45 +213,49 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 
         <div class="sidebar" id="sidebar">
             <script type="text/javascript">
-                try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+                try {
+                    ace.settings.check('sidebar', 'fixed')
+                } catch (e) {
+                }
             </script>
 
             <ul class="nav nav-list">
 
-                <?php if (\Yii::$app->user->identity->role == app\models\User::ROLE_ADMIN) { ?>
-                <li class="<?= \Yii::$app->controller->id == 'conf' ? 'active' : '' ?>">
-                    <a href="<?= Url::to('@web/conf/') ?>">
-                        <i class="icon-cogs"></i>
-                        <span class="menu-text">
+                <?php if (\Yii::$app->user->identity->role == app\models\User::ROLE_REVIEWER) { ?>
+                    <li class="<?= \Yii::$app->controller->id == 'conf' ? 'active' : '' ?>">
+                        <a href="<?= Url::to('@web/conf/') ?>">
+                            <i class="icon-cogs"></i>
+                            <span class="menu-text">
                             <?= yii::t('w', 'menu config project') ?>
                         </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="dropdown-toggle">
-                        <i class="icon-group"></i>
-                        <span class="menu-text"> 用户管理 </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-group"></i>
+                            <span class="menu-text"> 用户管理 </span>
 
-                        <b class="arrow icon-angle-down"></b>
-                    </a>
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
 
-                    <ul class="submenu" style="display: none;">
-                        <li>
-                            <a href="<?= Url::to('@web/user/list') ?>">
-                                <i class="icon-double-angle-right"></i>
-                                用户列表
-                            </a>
-                        </li>
+                        <ul class="submenu" style="display: none;">
+                            <li>
+                                <a href="<?= Url::to('@web/user/list') ?>">
+                                    <i class="icon-double-angle-right"></i>
+                                    用户列表
+                                </a>
+                            </li>
 
-                        <li>
-                            <a href="<?= Url::to('@web/user/add') ?>">
-                                <i class="icon-double-angle-right"></i>
-                                添加用户
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                            <li>
+                                <a href="<?= Url::to('@web/user/add') ?>">
+                                    <i class="icon-double-angle-right"></i>
+                                    添加用户
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 <?php } ?>
+
                 <li class="<?= \Yii::$app->controller->id == 'task' && \Yii::$app->controller->action->id == 'index'
                     ? 'active' : '' ?>">
                     <a href="<?= Url::to('@web/task/') ?>">
@@ -253,30 +265,28 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
                         </span>
                     </a>
                 </li>
-                <li class="<?= \Yii::$app->controller->id == 'task' && \Yii::$app->controller->action->id == 'submit'
-                    ? 'active' : '' ?>">
-                    <a href="<?= Url::to('@web/task/submit/') ?>">
-                        <i class="icon-cloud-upload"></i>
-                        <span class="menu-text">
+                <?php if (\app\models\Group::isDeveloper(\Yii::$app->getUser()->id)) { ?>
+                    <li class="<?= \Yii::$app->controller->id == 'task' && \Yii::$app->controller->action->id == 'submit'
+                        ? 'active' : '' ?>">
+                        <a href="<?= Url::to('@web/task/submit/') ?>">
+                            <i class="icon-cloud-upload"></i>
+                            <span class="menu-text">
                             <?= yii::t('w', 'menu submit task') ?>
                         </span>
-                    </a>
-                </li>
+                        </a>
+                    </li>
+                <?php } ?>
 
-                <li class="<?= \Yii::$app->controller->action->id == 'check' ? 'active' : '' ?>">
-                    <a href="<?= Url::to('@web/walle/check/') ?>">
-                        <i class=" icon-eye-open"></i>
-                        <span class="menu-text">
-                            <?= yii::t('w', 'menu file md5') ?>
-</span>
-                    </a>
-                </li>
             </ul><!-- /.nav-list -->
             <div class="sidebar-collapse" id="sidebar-collapse">
-                <i class="icon-double-angle-right" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+                <i class="icon-double-angle-right" data-icon1="icon-double-angle-left"
+                   data-icon2="icon-double-angle-right"></i>
             </div>
             <script type="text/javascript">
-                try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+                try {
+                    ace.settings.check('sidebar', 'collapsed')
+                } catch (e) {
+                }
             </script>
         </div>
 
@@ -296,7 +306,7 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
             <div class="page-content">
                 <div class="row">
                     <div class="col-xs-12">
-                    <?= $content ?>
+                        <?= $content ?>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.page-content -->
@@ -312,7 +322,7 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 <!-- basic scripts -->
 
 <script type="text/javascript">
-    if("ontouchend" in document) document.write("<script src='<?= Url::to('@web/dist/js/jquery.mobile.custom.min.js') ?>'>"+"<"+"/script>");
+    if ("ontouchend" in document) document.write("<script src='<?= Url::to('@web/dist/js/jquery.mobile.custom.min.js') ?>'>" + "<" + "/script>");
 </script>
 <script src="<?= Url::to('@web/dist/js/typeahead-bs2.min.js') ?>"></script>
 
@@ -340,7 +350,7 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 <!-- inline scripts related to this page -->
 <script>
 
-    jQuery(function($) {
+    jQuery(function ($) {
         $(".chosen-select").chosen();
         $('#chosen-multiple-style').on('click', function (e) {
             var target = $(e.target).find('input[type=radio]');
@@ -352,9 +362,9 @@ $userName =  \Yii::$app->user->id ? $user->getName() : '';
 
     })
 </script>
-    <?php $this->endBody() ?>
+<?php $this->endBody() ?>
 
-  </body>
+</body>
 </html>
 <?php $this->endPage() ?>
 

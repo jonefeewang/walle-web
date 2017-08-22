@@ -38,7 +38,7 @@ class ConfController extends Controller
         // 显示该用户为管理员的所有项目
         $project = Project::find()
             ->leftJoin(Group::tableName(), "`$groupTable`.`project_id`=`$projectTable`.`id`")
-            ->where(["`$groupTable`.`user_id`" => $this->uid, "`$groupTable`.`type`" => Group::TYPE_ADMIN]); 
+            ->where(["`$groupTable`.`user_id`" => $this->uid, "`$groupTable`.`type`" => Group::TYPE_REVIEWER]);
 
         $kw = \Yii::$app->request->post('kw');
         if ($kw) {
@@ -210,15 +210,17 @@ class ConfController extends Controller
      * @return string
      * @throws \Exception
      */
-    public function actionEditRelation($id, $type = 0) {
+    public function actionEditRelation($id, $type = 0,$action) {
         $group = Group::findOne($id);
         if (!$group) {
             throw new \Exception(yii::t('conf', 'relation not exists'));
         }
         $project = $this->findModel($group->project_id);
-        if (!in_array($type, [Group::TYPE_ADMIN, Group::TYPE_USER])) {
+        if (!in_array($type, [Group::TYPE_REVIEWER, Group::TYPE_DEV,Group::TYPE_DEPLOYER,Group::TYPE_PRODUCT,Group::TYPE_TESTER])) {
             throw new \Exception(yii::t('conf', 'unknown relation type'));
         }
+        if($action=="remove")
+            $type=0;
         $group->type = (int)$type;
         if (!$group->save()) throw new \Exception(yii::t('w', 'update failed'));
         $this->renderJson([]);

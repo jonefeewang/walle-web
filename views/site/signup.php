@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'password')->label(yii::t('w','register password'))->passwordInput() ?>
                 <?= $form->field($model, 'role')->label(yii::t('w','register role'))->dropDownList([
                     User::ROLE_DEV => \Yii::t('w', 'user_role_' . User::ROLE_DEV),
-                    User::ROLE_ADMIN => \Yii::t('w', 'user_role_' . User::ROLE_ADMIN),
+                    User::ROLE_REVIEWER => \Yii::t('w', 'user_role_' . User::ROLE_REVIEWER),
                 ]) ?>
                 <div class="form-group">
                     <?= Html::submitButton(yii::t('w','register-platform'), ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>

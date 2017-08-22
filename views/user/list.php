@@ -44,10 +44,16 @@ use app\models\User;
                         <td><?= $row['realname'] ?></td>
                         <td><?= $row['email'] ?></td>
                         <td>
-                            <?php if ($row['role'] == User::ROLE_ADMIN) { ?>
-                                <i class="icon icon-user-md green" data-placement="top" data-rel="tooltip" data-title="<?= yii::t('w', 'user_role_' . User::ROLE_ADMIN) ?>"></i>
-                            <?php } else { ?>
-                                <i class="icon icon-user" data-placement="top" data-rel="tooltip" data-title="<?= yii::t('w', 'user_role_' . User::ROLE_DEV) ?>"></i>
+                            <?php if ($row['role'] == User::ROLE_REVIEWER && $row['status']==User::STATUS_ADMIN_ACTIVE) { ?>
+                                <i class="icon icon-user-md red" data-placement="top" data-rel="tooltip" data-title="<?= yii::t('w', 'user_role_admin') ?>"></i>
+                            <?php } else if ($row['role'] == User::ROLE_REVIEWER) { ?>
+                                <i class="icon icon-user light-red" data-placement="top" data-rel="tooltip" data-title="<?= yii::t('w', 'user_role_'. User::ROLE_REVIEWER) ?>"></i>
+                            <?php } else if ($row['role'] == User::ROLE_DEV) { ?>
+                                <i class="icon icon-user green" data-placement="top" data-rel="tooltip" data-title="<?= yii::t('w', 'user_role_' . User::ROLE_DEV) ?>"></i>
+                            <?php } else if ($row['role'] == User::ROLE_TESTER) { ?>
+                                <i class="icon icon-user blue" data-placement="top" data-rel="tooltip" data-title="<?= yii::t('w', 'user_role_' . User::ROLE_TESTER) ?>"></i>
+                            <?php } else if ($row['role'] == User::ROLE_PRODUCT) { ?>
+                                <i class="icon icon-user grey" data-placement="top" data-rel="tooltip" data-title="<?= yii::t('w', 'user_role_' . User::ROLE_PRODUCT) ?>"></i>
                             <?php } ?>
 
                             <?php if ($row['status'] == User::STATUS_INVALID) { ?>
@@ -70,7 +76,7 @@ use app\models\User;
                                         data-user-email="<?= $row['email']?>"
                                         data-rename-url="<?= Url::to('@web/user/rename') ?>"
                                         data-status-url="<?= $row['status'] == User::STATUS_INVALID ? Url::to('@web/user/un-ban') : Url::to('@web/user/ban') ?>"
-                                        data-role-url="<?= $row['role'] == User::ROLE_ADMIN ? Url::to('@web/user/to-dev') : Url::to('@web/user/to-admin') ?>"
+                                        data-role-url="<?= $row['role'] == User::ROLE_REVIEWER ? Url::to('@web/user/to-dev') : Url::to('@web/user/to-admin') ?>"
                                         data-delete-url="<?= Url::to('@web/user/delete') ?>"
                                         >
                                         <li><a href="###" data-toggle="modal" data-target="#update-real-name" ><i class="icon-pencil"></i> <?= yii::t('w', 'edit') ?></a></li>

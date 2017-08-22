@@ -16,12 +16,24 @@ class Group extends \yii\db\ActiveRecord
     /**
      * 普通开发者
      */
-    const TYPE_USER  = 0;
+    const TYPE_DEV  = 1;
 
     /**
-     * 管理员
+     * 项目申请单审核员
      */
-    const TYPE_ADMIN = 1;
+    const TYPE_REVIEWER = 2;
+    /**
+     * 测试人员
+     */
+    const TYPE_DEPLOYER = 3;
+    /**
+     * 测试人员
+     */
+    const TYPE_TESTER = 4;
+    /**
+     * 产品人员
+     */
+    const TYPE_PRODUCT = 5;
 
     /**
      * @inheritdoc
@@ -71,7 +83,7 @@ class Group extends \yii\db\ActiveRecord
      * @param $userId array
      * @return bool
      */
-    public static function addGroupUser($projectId, $userIds, $type = Group::TYPE_USER) {
+    public static function addGroupUser($projectId, $userIds, $type = Group::TYPE_PRODUCT) {
         // 是否已在组内
         $exitsUids = Group::find()
             ->select(['user_id'])
@@ -102,7 +114,7 @@ class Group extends \yii\db\ActiveRecord
      */
     public static function isAuditAdmin($uid, $projectId = null) {
         $isAuditAdmin = static::find()
-            ->where(['user_id' => $uid, 'type' => Group::TYPE_ADMIN]);
+            ->where(['user_id' => $uid, 'type' => Group::TYPE_REVIEWER]);
         if ($projectId) {
             $isAuditAdmin->andWhere(['project_id' => $projectId, ]);
         }
@@ -118,8 +130,13 @@ class Group extends \yii\db\ActiveRecord
     public static function getAuditProjectIds($uid) {
         return static::find()
             ->select(['project_id'])
-            ->where(['user_id' => $uid, 'type' => Group::TYPE_ADMIN])
+            ->where(['user_id' => $uid, 'type' => Group::TYPE_REVIEWER])
             ->column();
+    }
+    public static function isDeveloper($uid){
+        $isTester = static::find()
+            ->where(['user_id' => $uid, 'type' => Group::TYPE_DEV]);
+        return $isTester->count();
     }
 
 }

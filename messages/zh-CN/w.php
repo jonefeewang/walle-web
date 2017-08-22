@@ -4,6 +4,8 @@ return [
     'w' => '奇创平台',
     'w title' => '奇创',
     'w platform' => '平台',
+    'w notice1'=>'上线申请详情,请进入',
+    'w notice2'=>'查询',
 
     'cross' => '--',
 

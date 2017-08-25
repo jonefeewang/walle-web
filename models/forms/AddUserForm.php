@@ -43,7 +43,7 @@ class AddUserForm extends Model
     {
         if ($this->validate()) {
             $user = new User();
-            $user->username = $this->email;
+            $user->username = explode('@',$this->email)[0];
             $user->email = $this->email;
             $user->role = $this->role;
             $user->realname = $this->realname;

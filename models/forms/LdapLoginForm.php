@@ -202,7 +202,7 @@ class LdapLoginForm extends LoginForm
             unset($value);
         }
 
-        $user->role = User::ROLE_DEV;
+        $user->role = User::ROLE_PRODUCT;
         $user->status = User::STATUS_ACTIVE;
         $user->is_email_verified = 1;
 

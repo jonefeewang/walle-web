@@ -96,6 +96,44 @@ use yii\jui\DatePicker;
             </div>
         </div>
 
+        <div class="row">
+
+            <div class="col-sm-4">
+                <?= $form->field($task, 'pass_review')->checkbox(['value' => true], false)->label(yii::t('task', 'pass_review title'), ['class' => 'control-label bolder blue']) ?>
+            </div>
+
+            <div class="col-sm-4">
+                <?= $form->field($task, 'pass_test')->checkbox(['value' => true], false)->label(yii::t('task', 'pass_test title'), ['class' => 'control-label bolder blue']) ?>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-2">
+                <?= $form->field($task, 'rollback_time')->textInput(['value' => '30分钟'])->label(yii::t('task', 'rollback_time title'), ['class' => 'control-label bolder blue']) ?>
+            </div>
+            <div class="col-sm-2">
+                <?= $form->field($task, 'deploy_time')->widget(\yii\jui\DatePicker::classname(), [
+                    'language' => 'zh-CN',
+                    'dateFormat' => 'php:Y-m-d',
+                    'options'=>[ 'class'=>'form-control'],
+                ])->label(yii::t('task', 'deploy_time title'), ['class' => 'control-label bolder blue']) ?>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-8">
+                <?= $form->field($task, 'regular_check')->textarea([
+                    'value' => '>首页正常显示：检查通过'.PHP_EOL.'>频​道推荐页正常显示：检查通过'.PHP_EOL.'>频道片库页正常显示：检查通过'.PHP_EOL.'>电视剧中间一集正常播放：检查通过'.PHP_EOL.'>综艺片正常播放，选集正常：检查通过'.PHP_EOL.'>VIP电影正常播放：检查通过'.PHP_EOL.'>前贴/角标/暂停广告播放正常：检查通过',
+                    'data-placement' => 'top',
+                    'data-rel' => 'tooltip',
+                    'data-title' => yii::t('task', 'regular_check tip'),
+                    'rows' => 10,
+                ])->label(yii::t('task', 'regular_check title'), ['class' => 'control-label bolder blue']) ?>
+            </div>
+        </div>
+
 
     </div>
 
@@ -122,46 +160,6 @@ use yii\jui\DatePicker;
         </div>
     </div>
 
-
-    <!-- 全量/增量 -->
-    <div class="form-group">
-        <label class="text-right bolder blue">
-            <?= yii::t('task', 'file transmission mode'); ?>
-        </label>
-        <div id="transmission-full-ctl" class="radio" style="display: inline;" data-rel="tooltip"
-             data-title="<?= yii::t('task', 'file transmission mode full tip') ?>" data-placement="right">
-            <label>
-                <input name="Task[file_transmission_mode]" value="<?= Task::FILE_TRANSMISSION_MODE_FULL ?>"
-                       checked="checked" type="radio" class="ace">
-                <span class="lbl"><?= yii::t('task', 'file transmission mode full') ?></span>
-            </label>
-        </div>
-
-        <div id="transmission-part-ctl" class="radio" style="display: inline;" data-rel="tooltip"
-             data-title="<?= yii::t('task', 'file transmission mode part tip') ?>" data-placement="right">
-            <label>
-                <input name="Task[file_transmission_mode]" value="<?= Task::FILE_TRANSMISSION_MODE_PART ?>"
-                       type="radio" class="ace">
-                <span class="lbl"><?= yii::t('task', 'file transmission mode part') ?></span>
-            </label>
-        </div>
-    </div>
-    <!-- 全量/增量 end -->
-
-    <!-- 文件列表 -->
-    <?= $form->field($task, 'file_list')
-        ->textarea([
-            'rows' => 12,
-            'placeholder' => "index.php\nREADME.md\ndir_name\nfile*",
-            'data-html' => 'true',
-            'data-placement' => 'top',
-            'data-rel' => 'tooltip',
-            'data-title' => yii::t('task', 'file list placeholder'),
-            'style' => 'display: none',
-        ])
-        ->label(yii::t('task', 'file list'),
-            ['class' => 'control-label bolder blue', 'style' => 'display: none']) ?>
-    <!-- 文件列表 end -->
 
 </div><!-- /.box-body -->
 

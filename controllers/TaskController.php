@@ -32,7 +32,7 @@ class TaskController extends Controller
         $list = Task::find()
             ->with('user')
             ->with('project')
-            ->leftJoin("group","task.project_id=group.project_id")
+            ->leftJoin("group", "task.project_id=group.project_id")
             ->where(['group.user_id' => $this->uid]);
 
         $projectTable = Project::tableName();
@@ -216,35 +216,7 @@ class TaskController extends Controller
             $this->layout = 'modal';
 
 
-            $taskUsers = (new \Yii\db\Query())
-                ->select('user.realname,user.email,taskuser.role')
-                ->from('taskuser')
-                ->leftJoin('user', '`taskuser`.user_id=user.id')
-                ->where(['`taskuser`.task_id' => $taskId])
-                ->all();
-
-//            unset($taskUserModel->developer, $taskUserModel->reviewer, $taskUserModel->deployer, $taskUserModel->tester);
-            $taskUserModel->developer = null;
-            $taskUserModel->reviewer = null;
-            $taskUserModel->deployer = null;
-            $taskUserModel->tester = null;
-            foreach ($taskUsers as $taskUser) {
-                switch ($taskUser['role']) {
-                    case 1:
-                        $taskUserModel->developer[] = $taskUser['realname'] . '-' . $taskUser['email'];
-                        break;
-                    case 2:
-                        $taskUserModel->reviewer[] = $taskUser['realname'] . '-' . $taskUser['email'];
-                        break;
-                    case 3:
-                        $taskUserModel->deployer[] = $taskUser['realname'] . '-' . $taskUser['email'];
-                        break;
-                    case 4:
-                        $taskUserModel->tester[] = $taskUser['realname'] . '-' . $taskUser['email'];
-                        break;
-                }
-
-            }
+            $taskUserModel = $this->getUserModel($taskId, $taskUserModel);
 
         }
 
@@ -344,6 +316,7 @@ class TaskController extends Controller
         $this->sendEmailUpdate($task, $task->project_id, $task->status);
         static::renderJson(['status' => \Yii::t('w', 'task_status_' . $task->status)]);
     }
+
     /**
      * 线上回测
      *
@@ -412,8 +385,12 @@ class TaskController extends Controller
             ->with('group')
             ->all();
 
+        $taskUserModel = new TaskUserModel();
+        $taskUserModel = $this->getUserModel($task->id, $taskUserModel);
+
         foreach ($users as $user) {
-            Command::log('send email --' . Yii::$app->mail->compose('taskStatus', ['user' => $user, 'task' => $task, 'conf' => Project::getConf($projectId)])
+            Command::log('send email --' . Yii::$app->mail->compose(['html' => 'taskStatus_html'],
+                    ['user' => $user, 'task' => $task, 'conf' => Project::getConf($projectId), 'taskUserModel' => $taskUserModel])
                     ->setFrom(Yii::$app->mail->messageConfig['from'])
                     ->setTo($user->email)
                     ->setSubject('【' . Yii::t('w', 'w') . Yii::t('w', 'cross')
@@ -423,6 +400,44 @@ class TaskController extends Controller
 
 
         return true;
+    }
+
+    /**
+     * @param $taskId
+     * @param $taskUserModel
+     */
+    public function getUserModel($taskId, $taskUserModel)
+    {
+        $taskUsers = (new \Yii\db\Query())
+            ->select('user.realname,user.email,taskuser.role')
+            ->from('taskuser')
+            ->leftJoin('user', '`taskuser`.user_id=user.id')
+            ->where(['`taskuser`.task_id' => $taskId])
+            ->all();
+
+//            unset($taskUserModel->developer, $taskUserModel->reviewer, $taskUserModel->deployer, $taskUserModel->tester);
+        $taskUserModel->developer = null;
+        $taskUserModel->reviewer = null;
+        $taskUserModel->deployer = null;
+        $taskUserModel->tester = null;
+        foreach ($taskUsers as $taskUser) {
+            switch ($taskUser['role']) {
+                case 1:
+                    $taskUserModel->developer[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                    break;
+                case 2:
+                    $taskUserModel->reviewer[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                    break;
+                case 3:
+                    $taskUserModel->deployer[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                    break;
+                case 4:
+                    $taskUserModel->tester[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                    break;
+            }
+
+        }
+        return $taskUserModel;
     }
 
 }

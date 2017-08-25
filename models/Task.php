@@ -133,7 +133,7 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'project_id', 'status', 'title', 'reqm_type', 'reqm_source', 'deploy_time'], 'required'],
+            [['user_id', 'project_id', 'status', 'title', 'reqm_type', 'deploy_time'], 'required'],
             [['user_id', 'project_id', 'action', 'status', 'file_transmission_mode'], 'integer'],
             [['created_at', 'updated_at', 'temp_theme', 'baselib_config', 'rollback_time', 'regular_check'], 'safe'],
             [['file_list', 'content'], 'string'],

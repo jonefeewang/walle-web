@@ -40,7 +40,7 @@ use yii\helpers\Url;
         <?= yii::t('task', 'reqm_source title') ?>
     </td>
     <td style="border:1px solid #e6e9ea;padding:5px 10px;box-sizing: border-box=;word-wrap: break-word;word-break: break-all;vertical-align: middle;width:600px;">
-        <?= $task->reqm_source ?>
+        <?= implode('<br>', $taskUserModel->product) ?>
     </td>
     </tr>
 

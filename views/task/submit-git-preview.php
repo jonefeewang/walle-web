@@ -26,7 +26,7 @@ $this->title = $conf->name;
         <div class="profile-info-name"> <?= yii::t('task', 'reqm_source title') ?> </div>
 
         <div class="profile-info-value">
-            <span><?= $task->reqm_source ?></span>
+            <span><?= implode('<br>', $taskUserModel->product) ?></span>
         </div>
     </div>
 

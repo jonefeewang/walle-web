@@ -24,10 +24,16 @@ use yii\jui\DatePicker;
             <div class="col-sm-4">
                 <?= $form->field($task, 'reqm_type')->textInput(['value' => '产品需求'])->label(yii::t('task', 'reqm_type title'), ['class' => 'control-label bolder blue']) ?>
             </div>
-            <div class="col-sm-4">
-                <?= $form->field($task, 'reqm_source')->textInput(['value' => '产品人员-张三'])->label(yii::t('task', 'reqm_source title'), ['class' => 'control-label bolder blue']) ?>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8">
+
+                <?= $form->field($taskUserModel, 'product')->listBox($users, ['multiple' => 'true', 'data-placeholder' => yii::t('conf', 'search'), 'class' => 'width-100 chosen-select'])->label(Yii::t('task', 'reqm_source title'), ['class' => 'control-label bolder blue']) ?>
+
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-8">
                 <?= $form->field($task, 'content')->textarea([

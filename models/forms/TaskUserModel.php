@@ -15,6 +15,7 @@ class TaskUserModel extends Model
     public $reviewer;
     public $deployer;
     public $tester;
+    public $product;
 
     public function init()
     {
@@ -31,7 +32,7 @@ class TaskUserModel extends Model
     {
         return [
             // username and password are both required
-            [['developer', 'reviewer', 'deployer', 'tester'], 'required'],
+            [['developer', 'reviewer', 'deployer', 'tester','product'], 'required'],
             // rememberMe must be a boolean value
         ];
     }

@@ -174,6 +174,14 @@ class TaskController extends Controller
                         $taskUser->role = 4;
                         $taskUserList[] = $taskUser;
                     }
+                    //产品人员
+                    foreach ($taskUserModel->product as $userId) {
+                        $taskUser = new TaskUser();
+                        $taskUser->user_id = $userId;
+                        $taskUser->task_id = $task->id;
+                        $taskUser->role = 5;
+                        $taskUserList[] = $taskUser;
+                    }
 
                     $taskUser = new TaskUser();
 
@@ -420,6 +428,7 @@ class TaskController extends Controller
         $taskUserModel->reviewer = null;
         $taskUserModel->deployer = null;
         $taskUserModel->tester = null;
+        $taskUserModel->product = null;
         foreach ($taskUsers as $taskUser) {
             switch ($taskUser['role']) {
                 case 1:
@@ -433,6 +442,9 @@ class TaskController extends Controller
                     break;
                 case 4:
                     $taskUserModel->tester[] = $taskUser['realname'] . '-' . $taskUser['email'];
+                    break;
+                case 5:
+                    $taskUserModel->product[] = $taskUser['realname'] . '-' . $taskUser['email'];
                     break;
             }
 

@@ -135,7 +135,8 @@ class Group extends \yii\db\ActiveRecord
     }
     public static function isDeveloper($uid){
         $isTester = static::find()
-            ->where(['user_id' => $uid, 'type' => Group::TYPE_DEV]);
+            ->where(['user_id' => $uid, 'type' => Group::TYPE_DEV])
+        ->orWhere(['user_id' => $uid, 'type' => Group::TYPE_REVIEWER]);
         return $isTester->count();
     }
 

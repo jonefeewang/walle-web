@@ -424,11 +424,11 @@ class TaskController extends Controller
             ->all();
 
 //            unset($taskUserModel->developer, $taskUserModel->reviewer, $taskUserModel->deployer, $taskUserModel->tester);
-        $taskUserModel->developer = null;
-        $taskUserModel->reviewer = null;
-        $taskUserModel->deployer = null;
-        $taskUserModel->tester = null;
-        $taskUserModel->product = null;
+        $taskUserModel->developer = array();
+        $taskUserModel->reviewer = array();
+        $taskUserModel->deployer = array();
+        $taskUserModel->tester = array();
+        $taskUserModel->product = array();
         foreach ($taskUsers as $taskUser) {
             switch ($taskUser['role']) {
                 case 1:

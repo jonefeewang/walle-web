@@ -114,7 +114,7 @@ class Project extends \yii\db\ActiveRecord
         return [
             [['user_id', 'repo_url', 'name', 'level', 'deploy_from', 'release_user', 'release_to', 'release_library', 'hosts', 'keep_version_num', 'apply_template'], 'required'],
             [['user_id', 'level', 'status', 'post_release_delay', 'audit', 'ansible', 'keep_version_num'], 'integer'],
-            [['excludes', 'hosts', 'pre_deploy', 'post_deploy', 'pre_release', 'post_release'], 'string'],
+            [['hosts', 'pre_deploy', 'post_deploy', 'pre_release', 'post_release'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'repo_password'], 'string', 'max' => 100],
             [['version'], 'string', 'max' => 20],
@@ -122,7 +122,28 @@ class Project extends \yii\db\ActiveRecord
             [['deploy_from', 'release_to', 'release_library', 'repo_url'], 'string', 'max' => 200],
             [['release_user', 'repo_mode', 'repo_username'], 'string', 'max' => 50],
             [['repo_type'], 'string', 'max' => 10],
+            ['excludes', 'validateExcludes'],
+            ['excludes','trim']
         ];
+    }
+
+    public function validateExcludes($attribute, $params, $validator)
+    {
+        if ($this->$attribute != "") {
+            $emailList = explode("\r\n", trim($this->$attribute));
+            foreach ($emailList as $email) {
+                if (!$this->EmailFormCheck($email)) {
+                    $this->addError($attribute, 'email格式不对,抄送人email列表必须是按行分隔一行一个.');
+                    return;
+                }
+            }
+
+        }
+    }
+
+    function EmailFormCheck($email)
+    {
+        return preg_match('/^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9_](?:[a-zA-Z0-9_\-](?!\.)){0,61}[a-zA-Z0-9_]?\.)+[a-zA-Z0-9_](?:[a-zA-Z0-9_\-](?!$)){0,61}[a-zA-Z0-9_]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/', $email);
     }
 
     /**
@@ -139,7 +160,7 @@ class Project extends \yii\db\ActiveRecord
             'version' => 'Version',
             'created_at' => 'Created At',
             'deploy_from' => '检出仓库',
-            'excludes' => '排除文件列表',
+            'excludes' => '抄送人邮件列表',
             'release_user' => '目标机器部署代码用户',
             'release_to' => '代码的webroot',
             'release_library' => '发布版本库',

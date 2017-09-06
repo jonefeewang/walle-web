@@ -2,13 +2,11 @@
 use yii\helpers\Url;
 /**
  * @var yii\web\View $this
- * @var common\models\User $user
  * @var common\models\Task $task
  */
 
 
 ?>
-<?= yii::t('user', 'dear') ?><strong><?= $user->realname ?></strong>:
 
 <br><br>
 <span style="font-size: 11px;font-family: 'Microsoft YaHei';"><?= $task->title ?>

@@ -387,26 +387,35 @@ class TaskController extends Controller
 //
         ##找出参与项目的所有人的email
         $users = User::oriFind()
-            ->select('user.*')
+            ->select('user.email,user.realname')
             ->leftJoin('`group`', '`group`.user_id=user.id')
             ->where(['`group`.project_id' => $projectId])
             ->with('group')
             ->all();
+        $project = Project::getConf($projectId);
+        $toUsers = array();
+        $ccUsers = array();
+
+        $emailList = explode("\r\n", trim($project->excludes));
+        foreach ($emailList as $email)
+            $ccUsers[$email] = "";
+
 
         $taskUserModel = new TaskUserModel();
         $taskUserModel = $this->getUserModel($task->id, $taskUserModel);
 
-        foreach ($users as $user) {
-            Command::log('send email --' . Yii::$app->mail->compose(['html' => 'taskStatus_html'],
-                    ['user' => $user, 'task' => $task, 'conf' => Project::getConf($projectId), 'taskUserModel' => $taskUserModel])
-                    ->setFrom(Yii::$app->mail->messageConfig['from'])
-                    ->setTo($user->email)
-                    ->setSubject('【' . Yii::t('w', 'w') . Yii::t('w', 'cross')
-                        . Yii::t('w', 'task_status_' . $task['status']) . '】' . Yii::t('w', 'cross') . $task->title)
-                    ->send());
-        }
+        foreach ($users as $user)
+            $toUsers[$user->email] = $user->realname;
 
 
+        Yii::$app->mail->compose(['html' => 'taskStatus_html'],
+            ['task' => $task, 'conf' => $project, 'taskUserModel' => $taskUserModel])
+            ->setFrom(Yii::$app->mail->messageConfig['from'])
+            ->setTo($toUsers)
+            ->setCc($ccUsers)
+            ->setSubject('【' . Yii::t('w', 'w') . Yii::t('w', 'cross')
+                . Yii::t('w', 'task_status_' . $task['status']) . '】' . Yii::t('w', 'cross') . $task->title)
+            ->send();
         return true;
     }
 

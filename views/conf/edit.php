@@ -113,7 +113,7 @@ use yii\widgets\ActiveForm;
                               ['class' => 'text-right bolder']) ?>
                       <?= $form->field($conf, 'excludes')
                           ->textarea([
-                              'placeholder'    => ".git\n.svn\nREADME.md",
+                              'placeholder'    => "xx@qiyi.com\nyy@qiyi.com",
                               'data-placement' => 'top',
                               'data-rel'       => 'tooltip',
                               'data-title'     => yii::t('conf', 'excludes tip'),
